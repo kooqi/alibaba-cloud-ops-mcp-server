@@ -16,8 +16,9 @@ tools = []
 
 def create_client(region_id: str) -> oos20190601Client:
     config = open_api_models.Config(
-        access_key_id=os.environ['ALIBABA_CLOUD_ACCESS_KEY_ID'],
-        access_key_secret=os.environ['ALIBABA_CLOUD_ACCESS_KEY_SECRET'],
+        access_key_id=os.getenv('ALIBABA_CLOUD_ACCESS_KEY_ID'),
+        access_key_secret=os.getenv('ALIBABA_CLOUD_ACCESS_KEY_SECRET'),
+        security_token=os.getenv('ALIBABA_CLOUD_SECURITY_TOKEN'),
         user_agent='alibaba-cloud-ops-mcp-server',
     )
     config.endpoint = f'oos.{region_id}.aliyuncs.com'

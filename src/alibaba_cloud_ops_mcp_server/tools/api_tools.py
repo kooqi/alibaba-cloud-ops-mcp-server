@@ -25,8 +25,9 @@ type_map = {
 
 def create_client(service: str, region_id: str) -> OpenApiClient:
     config = open_api_models.Config(
-        access_key_id=os.environ['ALIBABA_CLOUD_ACCESS_KEY_ID'],
-        access_key_secret=os.environ['ALIBABA_CLOUD_ACCESS_KEY_SECRET'],
+        access_key_id=os.getenv('ALIBABA_CLOUD_ACCESS_KEY_ID'),
+        access_key_secret=os.getenv('ALIBABA_CLOUD_ACCESS_KEY_SECRET'),
+        security_token=os.getenv('ALIBABA_CLOUD_SECURITY_TOKEN'),
         user_agent='alibaba-cloud-ops-mcp-server',
     )
     if isinstance(service, str):
