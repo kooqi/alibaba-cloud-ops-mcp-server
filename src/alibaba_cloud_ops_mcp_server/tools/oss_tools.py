@@ -13,8 +13,8 @@ tools = []
 class CredentialsProvider(EnvironmentVariableCredentialsProvider):
     def __init__(self) -> None:
         super().__init__()
-        access_key_id = os.environ['ALIBABA_CLOUD_ACCESS_KEY_ID']
-        access_key_secret = os.environ['ALIBABA_CLOUD_ACCESS_KEY_SECRET']
+        access_key_id = os.getenv('ALIBABA_CLOUD_ACCESS_KEY_ID')
+        access_key_secret = os.getenv('ALIBABA_CLOUD_ACCESS_KEY_SECRET')
         session_token = os.getenv('ALIBABA_CLOUD_SESSION_TOKEN', None)
 
         self._credentials = Credentials(
