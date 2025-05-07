@@ -5,6 +5,7 @@ import alibabacloud_oss_v2 as oss
 from pydantic import Field
 from alibabacloud_oss_v2 import Credentials
 from alibabacloud_oss_v2.credentials import EnvironmentVariableCredentialsProvider
+from alibabacloud_credentials.client import Client as CredClient
 
 
 tools = []
@@ -12,10 +13,10 @@ tools = []
 
 class CredentialsProvider(EnvironmentVariableCredentialsProvider):
     def __init__(self) -> None:
-        super().__init__()
-        access_key_id = os.getenv('ALIBABA_CLOUD_ACCESS_KEY_ID')
-        access_key_secret = os.getenv('ALIBABA_CLOUD_ACCESS_KEY_SECRET')
-        session_token = os.getenv('ALIBABA_CLOUD_SESSION_TOKEN', None)
+        credentialsClient = CredClient()
+        access_key_id = credentialsClient.get_credential().access_key_id
+        access_key_secret = credentialsClient.get_credential().access_key_secret
+        session_token = credentialsClient.get_credential().security_token
 
         self._credentials = Credentials(
             access_key_id, access_key_secret, session_token)
@@ -27,6 +28,7 @@ class CredentialsProvider(EnvironmentVariableCredentialsProvider):
 def create_client(region_id: str) -> oss.Client:
     credentials_provider = CredentialsProvider()
     cfg = oss.config.load_default()
+    cfg.user_agent = 'alibaba-cloud-ops-mcp-server'
     cfg.credentials_provider = credentials_provider
     cfg.region = region_id
     return oss.Client(cfg)
