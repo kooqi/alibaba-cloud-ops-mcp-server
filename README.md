@@ -1,6 +1,10 @@
-# alibaba-cloud-ops-mcp-server
+# Alibaba Cloud Ops MCP Server
+
+[![GitHub stars](https://img.shields.io/github/stars/aliyun/alibaba-cloud-ops-mcp-server?style=social)](https://github.com/aliyun/alibaba-cloud-ops-mcp-server)
 
 [中文版本](./README_zh.md)
+
+Alibaba Cloud Ops MCP Server is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) server that provides seamless integration with Alibaba Cloud APIs, enabling AI assistants to operation resources on Alibaba Cloud, supporting ECS, Cloud Monitor, OOS andother widely used cloud products.
 
 ## Prepare
 
@@ -34,6 +38,19 @@ To use `alibaba-cloud-ops-mcp-server` MCP Server with any other MCP Client, you 
   }
 }
 ```
+
+## MCP Maketplace Integration
+
+* [Cline](https://cline.bot/mcp-marketplace)
+* [ModelScope](https://www.modelscope.cn/mcp/servers/@aliyun/alibaba-cloud-ops-mcp-server?lang=en_US)
+* [Lingma](https://lingma.aliyun.com/)
+* [Smithery AI](https://smithery.ai/server/@aliyun/alibaba-cloud-ops-mcp-server)
+
+## Know More
+
+* [Alibaba Cloud MCP Server is ready to use out of the box!！](https://developer.aliyun.com/article/1661348)
+* [Setup Alibaba Cloud MCP Server on Bailian](https://developer.aliyun.com/article/1662120)
+* [Build your own Alibaba Cloud OpenAPI MCP Server with 10 lines of code](https://developer.aliyun.com/article/1662202)
 
 ## Tools
 
@@ -78,7 +95,3 @@ To use `alibaba-cloud-ops-mcp-server` MCP Server with any other MCP Client, you 
 If you have any questions, please join the [Alibaba Cloud Ops MCP discussion group](https://qr.dingtalk.com/action/joingroup?code=v1,k1,iFxYG4jjLVh1jfmNAkkclji7CN5DSIdT+jvFsLyI60I=&_dt_no_comment=1&origin=11) (DingTalk group: 113455011677) for discussion.
 
 <img src="https://oos-public-cn-hangzhou.oss-cn-hangzhou.aliyuncs.com/alibaba-cloud-ops-mcp-server/Alibaba-Cloud-Ops-MCP-User-Group-en.png" width="500">
-
-## Know More
-
-- [Alibaba Cloud MCP Server is ready to use out of the box!！](https://developer.aliyun.com/article/1661348)

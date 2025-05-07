@@ -1,5 +1,11 @@
-# alibaba-cloud-ops-mcp-server
+# Alibaba Cloud Ops MCP Server
+
+[![GitHub stars](https://img.shields.io/github/stars/aliyun/alibaba-cloud-ops-mcp-server?style=social)](https://github.com/aliyun/alibaba-cloud-ops-mcp-server)
+
 [English README](./README.md)
+
+Alibaba Cloud MCP Server是一个[模型上下文协议（MCP）](https://modelcontextprotocol.io/introduction)服务器，提供与阿里云API的无缝集成，使AI助手能够操作阿里云上的资源，支持ECS、云监控、OOS等广泛使用的云产品。
+
 ## 准备
 
 安装[uv](https://github.com/astral-sh/uv)
@@ -32,6 +38,19 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
   }
 }
 ```
+
+## MCP市场集成
+
+* [Cline](https://cline.bot/mcp-marketplace)：
+* [ModelScope](https://www.modelscope.cn/mcp/servers/@aliyun/alibaba-cloud-ops-mcp-server)
+* [Lingma](https://lingma.aliyun.com/)
+* [Smithery AI](https://smithery.ai/server/@aliyun/alibaba-cloud-ops-mcp-server)
+
+## 了解更多
+
+* [阿里云 MCP Server 开箱即用！](https://developer.aliyun.com/article/1661348)
+* [在百炼平台配置您的自定义阿里云MCP Server](https://developer.aliyun.com/article/1662120)
+* [10行代码，实现你的专属阿里云OpenAPI MCP Server](https://developer.aliyun.com/article/1662202)
 
 ## 功能点（Tool）
 
@@ -71,12 +90,8 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 |  | GetDiskTotalData | 获取磁盘分区总容量指标数据 | API | Done |
 |  | GetDiskUsedData | 获取磁盘分区使用量指标数据 | API | Done |
 
-
 ## 联系我们
 
 如果您有任何疑问，欢迎加入 [Alibaba Cloud Ops MCP 交流群](https://qr.dingtalk.com/action/joingroup?code=v1,k1,iFxYG4jjLVh1jfmNAkkclji7CN5DSIdT+jvFsLyI60I=&_dt_no_comment=1&origin=11) (钉钉群：113455011677) 进行交流。
 
 <img src="https://oos-public-cn-hangzhou.oss-cn-hangzhou.aliyuncs.com/alibaba-cloud-ops-mcp-server/Alibaba-Cloud-Ops-MCP-User-Group-zh.png" width="500">
-
-## 了解更多
-- [阿里云 MCP Server 开箱即用！](https://developer.aliyun.com/article/1661348)
