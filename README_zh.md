@@ -41,9 +41,9 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ## MCP市场集成
 
-* [Cline](https://cline.bot/mcp-marketplace)：
-* [ModelScope](https://www.modelscope.cn/mcp/servers/@aliyun/alibaba-cloud-ops-mcp-server)
-* [Lingma](https://lingma.aliyun.com/)
+* [Cline](https://cline.bot/mcp-marketplace)
+* [魔搭](https://www.modelscope.cn/mcp/servers/@aliyun/alibaba-cloud-ops-mcp-server)
+* [通义灵码](https://lingma.aliyun.com/)
 * [Smithery AI](https://smithery.ai/server/@aliyun/alibaba-cloud-ops-mcp-server)
 
 ## 了解更多
