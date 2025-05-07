@@ -45,6 +45,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 * [魔搭](https://www.modelscope.cn/mcp/servers/@aliyun/alibaba-cloud-ops-mcp-server)
 * [通义灵码](https://lingma.aliyun.com/)
 * [Smithery AI](https://smithery.ai/server/@aliyun/alibaba-cloud-ops-mcp-server)
+* [FC-Function AI](https://cap.console.aliyun.com/template-detail?template=237)
 
 ## 了解更多
 
