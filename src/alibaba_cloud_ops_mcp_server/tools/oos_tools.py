@@ -5,8 +5,8 @@ import json
 import time
 
 from alibabacloud_oos20190601.client import Client as oos20190601Client
-from alibabacloud_tea_openapi import models as open_api_models
 from alibabacloud_oos20190601 import models as oos_20190601_models
+from alibaba_cloud_ops_mcp_server.alibabacloud.utils import create_config
 
 
 END_STATUSES = ['Success', 'Failed', 'Cancelled']
@@ -14,13 +14,9 @@ END_STATUSES = ['Success', 'Failed', 'Cancelled']
 
 tools = []
 
+
 def create_client(region_id: str) -> oos20190601Client:
-    config = open_api_models.Config(
-        access_key_id=os.getenv('ALIBABA_CLOUD_ACCESS_KEY_ID'),
-        access_key_secret=os.getenv('ALIBABA_CLOUD_ACCESS_KEY_SECRET'),
-        security_token=os.getenv('ALIBABA_CLOUD_SECURITY_TOKEN'),
-        user_agent='alibaba-cloud-ops-mcp-server',
-    )
+    config = create_config()
     config.endpoint = f'oos.{region_id}.aliyuncs.com'
     return oos20190601Client(config)
 

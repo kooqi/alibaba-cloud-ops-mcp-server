@@ -11,6 +11,7 @@ from alibabacloud_tea_util import models as util_models
 from alibabacloud_tea_openapi.client import Client as OpenApiClient
 from alibabacloud_openapi_util.client import Client as OpenApiUtilClient
 from alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client import ApiMetaClient
+from alibaba_cloud_ops_mcp_server.alibabacloud.utils import create_config
 
 
 type_map = {
@@ -24,12 +25,7 @@ type_map = {
 
 
 def create_client(service: str, region_id: str) -> OpenApiClient:
-    config = open_api_models.Config(
-        access_key_id=os.getenv('ALIBABA_CLOUD_ACCESS_KEY_ID'),
-        access_key_secret=os.getenv('ALIBABA_CLOUD_ACCESS_KEY_SECRET'),
-        security_token=os.getenv('ALIBABA_CLOUD_SECURITY_TOKEN'),
-        user_agent='alibaba-cloud-ops-mcp-server',
-    )
+    config = create_config()
     if isinstance(service, str):
         service = service.lower()
     config.endpoint = f'{service}.{region_id}.aliyuncs.com'

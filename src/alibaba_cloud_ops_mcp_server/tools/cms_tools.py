@@ -4,10 +4,8 @@ import os
 import json
 
 from alibabacloud_cms20190101.client import Client as cms20190101Client
-from alibabacloud_tea_openapi import models as open_api_models
 from alibabacloud_cms20190101 import models as cms_20190101_models
-from alibabacloud_tea_util import models as util_models
-from alibabacloud_tea_util.client import Client as UtilClient
+from alibaba_cloud_ops_mcp_server.alibabacloud.utils import create_config
 
 
 END_STATUSES = ['Success', 'Failed', 'Cancelled']
@@ -17,12 +15,7 @@ tools = []
 
 
 def create_client(region_id: str) -> cms20190101Client:
-    config = open_api_models.Config(
-        access_key_id=os.getenv('ALIBABA_CLOUD_ACCESS_KEY_ID'),
-        access_key_secret=os.getenv('ALIBABA_CLOUD_ACCESS_KEY_SECRET'),
-        security_token=os.getenv('ALIBABA_CLOUD_SECURITY_TOKEN'),
-        user_agent='alibaba-cloud-ops-mcp-server',
-    )
+    config = create_config()
     config.endpoint = f'metrics.{region_id}.aliyuncs.com'
     return cms20190101Client(config)
 
