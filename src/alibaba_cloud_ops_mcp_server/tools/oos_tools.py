@@ -7,9 +7,10 @@ import time
 from alibabacloud_oos20190601.client import Client as oos20190601Client
 from alibabacloud_oos20190601 import models as oos_20190601_models
 from alibaba_cloud_ops_mcp_server.alibabacloud.utils import create_config
+from alibaba_cloud_ops_mcp_server.alibabacloud import exception
 
 
-END_STATUSES = ['Success', 'Failed', 'Cancelled']
+END_STATUSES = [SUCCESS, FAILED, CANCELLED] = ['Success', 'Failed', 'Cancelled']
 
 
 tools = []
@@ -38,7 +39,10 @@ def _start_execution_sync(region_id: str, template_name: str, parameters: dict):
         )
         list_executions_resp = client.list_executions(list_executions_request)
         status = list_executions_resp.body.executions[0].status
-        if status in END_STATUSES:
+        if status == FAILED:
+            status_message = list_executions_resp.body.executions[0].status_message
+            raise exception.OOSExecutionFailed(reason=status_message)
+        elif status in END_STATUSES:
             return list_executions_resp.body
         time.sleep(1)
 @tools.append
