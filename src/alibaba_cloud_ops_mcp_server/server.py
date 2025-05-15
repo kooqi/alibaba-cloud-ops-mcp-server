@@ -15,9 +15,18 @@ logger = logging.getLogger(__name__)
     default="stdio",
     help="Transport type",
 )
-def main(transport: str):
+@click.option(
+    "--port",
+    type=int,
+    default=8000,
+    help="Port number",
+)
+def main(transport: str, port: int):
     # Create an MCP server
-    mcp = FastMCP("alibaba-cloud-ops-mcp-server")
+    mcp = FastMCP(
+        name="alibaba-cloud-ops-mcp-server",
+        port=port
+    )
     for tool in oos_tools.tools:
         mcp.add_tool(tool)
     for tool in cms_tools.tools:
