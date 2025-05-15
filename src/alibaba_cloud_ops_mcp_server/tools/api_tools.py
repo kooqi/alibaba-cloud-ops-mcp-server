@@ -90,7 +90,7 @@ def _create_function_schemas(service, api, api_meta):
         schemas[api]['RegionId'] = (
             str,
             field(
-                default=None,
+                default='cn-hangzhou',
                 metadata={'description': '地域ID', 'required': False}
             )
         )
