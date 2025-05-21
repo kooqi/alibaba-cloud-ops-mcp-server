@@ -4,7 +4,7 @@
 
 [English README](./README.md)
 
-Alibaba Cloud MCP Server是一个[模型上下文协议（MCP）](https://modelcontextprotocol.io/introduction)服务器，提供与阿里云API的无缝集成，使AI助手能够操作阿里云上的资源，支持ECS、云监控、OOS等广泛使用的云产品。
+Alibaba Cloud Ops MCP Server是一个[模型上下文协议（MCP）](https://modelcontextprotocol.io/introduction)服务器，提供与阿里云API的无缝集成，使AI助手能够操作阿里云上的资源，支持ECS、云监控、OOS等广泛使用的云产品。
 
 ## 准备
 
