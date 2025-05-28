@@ -1,6 +1,6 @@
 [project]
 name = "alibaba-cloud-ops-mcp-server"
-version = "0.8.6"
+version = "0.8.7"
 description = "A MCP server for Alibaba Cloud"
 readme = "README.md"
 authors = [
@@ -12,8 +12,9 @@ dependencies = [
     "alibabacloud-ecs20140526>=6.1.0",
     "alibabacloud-oos20190601>=3.4.1",
     "alibabacloud_oss_v2>=1.1.0",
+    "alibabacloud-credentials>=1.0.0",
     "click>=8.1.8",
-    "mcp[cli]>=1.6.0",
+    "mcp[cli]>=1.9.0",
 ]
 
 [build-system]

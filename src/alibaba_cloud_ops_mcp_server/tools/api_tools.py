@@ -97,7 +97,7 @@ def _create_function_schemas(service, api, api_meta):
     return schemas
 
 
-def _create_tool_function_with_signature(service: str, function_name: str, fields: dict, description: str):
+def _create_tool_function_with_signature(service: str, api: str, fields: dict, description: str):
     """
     Dynamically creates a lambda function with a custom signature based on the provided fields.
     """
@@ -121,14 +121,14 @@ def _create_tool_function_with_signature(service: str, function_name: str, field
         defaults[name] = field_default
 
     signature = inspect.Signature(parameters)
-
+    function_name = f'{service.upper()}_{api}'
     def func_code(*args, **kwargs):
         bound_args = signature.bind(*args, **kwargs)
         bound_args.apply_defaults()
 
         return _tools_api_call(
             service=service,
-            api=function_name,
+            api=api,
             parameters=bound_args.arguments,
             ctx=None
         )
@@ -154,7 +154,8 @@ def _create_and_decorate_tool(mcp: FastMCP, service: str, api: str):
     fields = _create_function_schemas(service, api, api_meta).get(api, {})
     description = api_meta.get('summary', '')
     dynamic_lambda = _create_tool_function_with_signature(service, api, fields, description)
-    decorated_function = mcp.tool(name=api)(dynamic_lambda)
+    function_name = f'{service.upper()}_{api}'
+    decorated_function = mcp.tool(name=function_name)(dynamic_lambda)
 
     return decorated_function
 

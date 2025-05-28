@@ -36,7 +36,7 @@ def _get_cms_metric_data(region_id: str, instance_ids: List[str], metric_name: s
     return describe_metric_last_resp.body.datapoints
 
 @tools.append
-def GetCpuUsageData(
+def CMS_GetCpuUsageData(
     RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
 ):
@@ -45,7 +45,7 @@ def GetCpuUsageData(
 
 
 @tools.append
-def GetCpuLoadavgData(
+def CMS_GetCpuLoadavgData(
     RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
 ):
@@ -54,7 +54,7 @@ def GetCpuLoadavgData(
 
 
 @tools.append
-def GetCpuloadavg5mData(
+def CMS_GetCpuloadavg5mData(
     RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
 ):
@@ -63,7 +63,7 @@ def GetCpuloadavg5mData(
     
 
 @tools.append
-def GetCpuloadavg15mData(
+def CMS_GetCpuloadavg15mData(
     RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
 ):
@@ -71,7 +71,7 @@ def GetCpuloadavg15mData(
     return _get_cms_metric_data(RegionId, InstanceIds, 'load_15m')
 
 @tools.append
-def GetMemUsedData(
+def CMS_GetMemUsedData(
     RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
 ):
@@ -80,7 +80,7 @@ def GetMemUsedData(
 
 
 @tools.append
-def GetMemUsageData(
+def CMS_GetMemUsageData(
     RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
 ):
@@ -89,7 +89,7 @@ def GetMemUsageData(
 
 
 @tools.append
-def GetDiskUsageData(
+def CMS_GetDiskUsageData(
     RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
 ):
@@ -98,7 +98,7 @@ def GetDiskUsageData(
 
 
 @tools.append
-def GetDiskTotalData(
+def CMS_GetDiskTotalData(
     RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
 ):
@@ -107,7 +107,7 @@ def GetDiskTotalData(
 
 
 @tools.append
-def GetDiskUsedData(
+def CMS_GetDiskUsedData(
     RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
 ):

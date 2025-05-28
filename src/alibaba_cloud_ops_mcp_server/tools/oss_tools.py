@@ -35,7 +35,7 @@ def create_client(region_id: str) -> oss.Client:
 
 
 @tools.append
-def ListBuckets(
+def OSS_ListBuckets(
     RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     Prefix: str = Field(description='AlibabaCloud OSS Bucket Name prefix', default=None)
 ):
@@ -50,7 +50,7 @@ def ListBuckets(
 
 
 @tools.append
-def ListObjects(
+def OSS_ListObjects(
     RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     BucketName: str = Field(description='AlibabaCloud OSS Bucket Name'),
     Prefix: str = Field(description='AlibabaCloud OSS Bucket Name prefix', default=None)
@@ -71,7 +71,7 @@ def ListObjects(
 
 
 @tools.append
-def PutBucket(
+def OSS_PutBucket(
     RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     BucketName: str = Field(description='AlibabaCloud OSS Bucket Name'),
     StorageClass: str = Field(description='The Storage Type of AlibabaCloud OSS Bucket, The value range is as follows: '
@@ -99,7 +99,7 @@ def PutBucket(
 
 
 @tools.append
-def DeleteBucket(
+def OSS_DeleteBucket(
     RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     BucketName: str = Field(description='AlibabaCloud OSS Bucket Name')
 ):
