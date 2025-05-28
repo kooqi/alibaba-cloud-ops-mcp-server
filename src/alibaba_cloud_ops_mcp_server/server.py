@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 @click.command()
 @click.option(
     "--transport",
-    type=click.Choice(["stdio", "sse"]),
+    type=click.Choice(["stdio", "sse", "streamable-http"]),
     default="stdio",
     help="Transport type",
 )

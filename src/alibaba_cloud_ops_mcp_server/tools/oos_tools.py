@@ -46,7 +46,7 @@ def _start_execution_sync(region_id: str, template_name: str, parameters: dict):
             return list_executions_resp.body
         time.sleep(1)
 @tools.append
-def RunCommand(
+def OOS_RunCommand(
      RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
      InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
      CommandType: str = Field(description='The type of command executed on the ECS instance, optional value：RunShellScript，RunPythonScript，RunPerlScript，RunBatScript，RunPowerShellScript', default='RunShellScript'),
@@ -73,7 +73,7 @@ def RunCommand(
     
 
 @tools.append
-def StartInstances(
+def OOS_StartInstances(
      RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
      InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
 ):
@@ -92,7 +92,7 @@ def StartInstances(
 
 
 @tools.append
-def StopInstances(
+def OOS_StopInstances(
      RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
      InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
      ForeceStop: bool = Field(description='Is forced shutdown required', default=False),
@@ -113,7 +113,7 @@ def StopInstances(
 
 
 @tools.append
-def RebootInstances(
+def OOS_RebootInstances(
      RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
      InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
      ForeceStop: bool = Field(description='Is forced shutdown required', default=False),
@@ -134,7 +134,7 @@ def RebootInstances(
 
 
 @tools.append
-def RunInstances(
+def OOS_RunInstances(
     RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     ImageId: str = Field(description='Image ID'),
     InstanceType: str = Field(description='Instance Type'),
@@ -157,7 +157,7 @@ def RunInstances(
 
 
 @tools.append
-def ResetPassword(
+def OOS_ResetPassword(
     RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
     Password: str = Field(description='The password of the ECS instance must be 8-30 characters and must contain only the following characters: lowercase letters, uppercase letters, numbers, and special characters only.（）~！@#$%^&*-_+=（40：<>，？/'),
@@ -176,7 +176,7 @@ def ResetPassword(
     return _start_execution_sync(region_id=RegionId, template_name='ACS-ECS-BulkyResetPassword', parameters=parameters)
 
 @tools.append
-def ReplaceSystemDisk(
+def OOS_ReplaceSystemDisk(
         RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
         InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
         ImageId: str = Field(description='Image ID')
@@ -196,7 +196,7 @@ def ReplaceSystemDisk(
 
 
 @tools.append
-def StartRDSInstances(
+def OOS_StartRDSInstances(
         RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
         InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
 ):
@@ -215,7 +215,7 @@ def StartRDSInstances(
 
 
 @tools.append
-def StopRDSInstances(
+def OOS_StopRDSInstances(
         RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
         InstanceIds: List[str] = Field(description='AlibabaCloud RDS instance ID List')
 ):
@@ -234,7 +234,7 @@ def StopRDSInstances(
 
 
 @tools.append
-def RebootRDSInstances(
+def OOS_RebootRDSInstances(
         RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
         InstanceIds: List[str] = Field(description='AlibabaCloud RDS instance ID List')
 ):
