@@ -46,6 +46,7 @@ To use `alibaba-cloud-ops-mcp-server` MCP Server with any other MCP Client, you 
 * [Lingma](https://lingma.aliyun.com/)
 * [Smithery AI](https://smithery.ai/server/@aliyun/alibaba-cloud-ops-mcp-server)
 * [FC-Function AI](https://cap.console.aliyun.com/template-detail?template=237)
+* [Alibaba Cloud Model Studio](https://bailian.console.aliyun.com/?tab=mcp#/mcp-market/detail/alibaba-cloud-ops)
 
 ## Know More
 
