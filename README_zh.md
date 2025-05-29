@@ -53,6 +53,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 * [阿里云 MCP Server 开箱即用！](https://developer.aliyun.com/article/1661348)
 * [在百炼平台配置您的自定义阿里云MCP Server](https://developer.aliyun.com/article/1662120)
 * [10行代码，实现你的专属阿里云OpenAPI MCP Server](https://developer.aliyun.com/article/1662202)
+* [阿里云CloudOps MCP正式上架百炼平台MCP市场](https://developer.aliyun.com/article/1665019)
 
 ## 功能点（Tool）
 

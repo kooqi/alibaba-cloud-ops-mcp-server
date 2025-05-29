@@ -50,9 +50,10 @@ To use `alibaba-cloud-ops-mcp-server` MCP Server with any other MCP Client, you 
 
 ## Know More
 
-* [Alibaba Cloud MCP Server is ready to use out of the box!！](https://developer.aliyun.com/article/1661348)
-* [Setup Alibaba Cloud MCP Server on Bailian](https://developer.aliyun.com/article/1662120)
+* [Alibaba Cloud Ops MCP Server is ready to use out of the box!！](https://developer.aliyun.com/article/1661348)
+* [Setup Alibaba Cloud Ops MCP Server on Bailian](https://developer.aliyun.com/article/1662120)
 * [Build your own Alibaba Cloud OpenAPI MCP Server with 10 lines of code](https://developer.aliyun.com/article/1662202)
+* [Alibaba Cloud Ops MCP Server is officially available on the Alibaba Cloud Model Studio Platform MCP Marketplace](https://developer.aliyun.com/article/1665019)
 
 ## Tools
 
