@@ -3,7 +3,7 @@ import click
 import logging
 
 from alibaba_cloud_ops_mcp_server.config import config
-from alibaba_cloud_ops_mcp_server.tools import cms_tools, oos_tools, oss_tools, api_tools
+from alibaba_cloud_ops_mcp_server.tools import cms_tools, oos_tools, oss_tools, api_tools, common_api_tools
 
 logger = logging.getLogger(__name__)
 
@@ -21,12 +21,21 @@ logger = logging.getLogger(__name__)
     default=8000,
     help="Port number",
 )
-def main(transport: str, port: int):
+@click.option(
+    "--use-common-api-caller",
+    is_flag=True,
+    default=False,
+    help="Enable common_api_caller if set",
+)
+def main(transport: str, port: int, use_common_api_caller: bool):
     # Create an MCP server
     mcp = FastMCP(
         name="alibaba-cloud-ops-mcp-server",
         port=port
     )
+    if use_common_api_caller:
+        for tool in common_api_tools.tools:
+            mcp.add_tool(tool)
     for tool in oos_tools.tools:
         mcp.add_tool(tool)
     for tool in cms_tools.tools:
