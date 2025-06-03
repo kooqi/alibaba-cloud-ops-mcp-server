@@ -47,7 +47,7 @@ def main(transport: str, port: int, services: str):
     )
 
     if services:
-        service_keys = [s.strip() for s in services.split(",")]
+        service_keys = [s.strip().lower() for s in services.split(",")]
         service_list = [(key, SUPPORTED_SERVICES_MAP.get(key, key)) for key in service_keys]
         set_custom_service_list(service_list)
         for tool in common_api_tools.tools:
