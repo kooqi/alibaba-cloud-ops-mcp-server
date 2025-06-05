@@ -42,6 +42,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 ## MCP市场集成
 
 * [Cline](https://cline.bot/mcp-marketplace)
+* [Cursor](https://docs.cursor.com/tools) [![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/install-mcp?name=alibaba-cloud-ops-mcp-server&config=eyJ0aW1lb3V0Ijo2MDAsImNvbW1hbmQiOiJ1dnggYWxpYmFiYS1jbG91ZC1vcHMtbWNwLXNlcnZlckBsYXRlc3QiLCJlbnYiOnsiQUxJQkFCQV9DTE9VRF9BQ0NFU1NfS0VZX0lEIjoiWW91ciBBY2Nlc3MgS2V5IElEIiwiQUxJQkFCQV9DTE9VRF9BQ0NFU1NfS0VZX1NFQ1JFVCI6IllvdXIgQWNjZXNzIEtleSBTRUNSRVQifX0%3D)
 * [魔搭](https://www.modelscope.cn/mcp/servers/@aliyun/alibaba-cloud-ops-mcp-server)
 * [通义灵码](https://lingma.aliyun.com/)
 * [Smithery AI](https://smithery.ai/server/@aliyun/alibaba-cloud-ops-mcp-server)
