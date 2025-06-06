@@ -130,9 +130,9 @@ def test_get_apis_in_service(mock_get):
 def test_get_response_from_pop_api_keyerror(mock_get):
     # config 缺 key
     with patch.object(api_meta_client.ApiMetaClient, 'config', {'GetProductList': {}}):
-        with pytest.raises(UnboundLocalError) as e:
+        with pytest.raises(Exception) as e:
             api_meta_client.ApiMetaClient.get_response_from_pop_api('GetProductList')
-        assert 'cannot access local variable' in str(e.value)
+        assert 'Failed to format path' in str(e.value)
 
 @patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.ApiMetaClient.get_api_meta', return_value=({}, '2014-05-26'))
 def test_get_response_from_api_meta_no_properties(mock_get_meta):
