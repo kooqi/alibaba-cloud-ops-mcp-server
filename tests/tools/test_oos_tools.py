@@ -85,4 +85,78 @@ def test_OOS_StopRDSInstances():
 def test_OOS_RebootRDSInstances():
     func = get_tool_func("OOS_RebootRDSInstances")
     result = func(RegionId='cn-test', InstanceIds=['rds-1'])
-    assert hasattr(result, 'executions') 
+    assert hasattr(result, 'executions')
+
+def test_create_client_exception():
+    with patch('alibaba_cloud_ops_mcp_server.tools.oos_tools.create_config', side_effect=Exception('fail')):
+        with pytest.raises(Exception) as e:
+            oos_tools.create_client('cn-test')
+        assert 'fail' in str(e.value)
+
+def test_start_execution_sync_failed():
+    # FakeClient 返回 status==FAILED
+    class FakeExecution:
+        execution_id = 'exec-1'
+        status = 'Failed'
+        status_message = 'fail-reason'
+    class FakeBody:
+        executions = [FakeExecution()]
+    class FakeListResp:
+        body = FakeBody()
+    class FakeStartResp:
+        class Body:
+            class Execution:
+                execution_id = 'exec-1'
+            execution = Execution()
+        body = Body()
+    class FakeClient:
+        def start_execution(self, req):
+            return FakeStartResp()
+        def list_executions(self, req):
+            return FakeListResp()
+    with patch('alibaba_cloud_ops_mcp_server.tools.oos_tools.create_client', return_value=FakeClient()):
+        with pytest.raises(Exception) as e:
+            oos_tools._start_execution_sync('cn-test', 'tpl', {})
+        assert 'fail-reason' in str(e.value)
+
+def test_start_execution_sync_loop():
+    # status 既不是 FAILED 也不是 END_STATUSES，触发 time.sleep(1)
+    class FakeExecution:
+        execution_id = 'exec-1'
+        status = 'Running'
+        status_message = 'running'
+    class FakeBody:
+        executions = [FakeExecution()]
+    class FakeListResp:
+        body = FakeBody()
+    class FakeStartResp:
+        class Body:
+            class Execution:
+                execution_id = 'exec-1'
+            execution = Execution()
+        body = Body()
+    class FakeClient:
+        def __init__(self):
+            self.calls = 0
+        def start_execution(self, req):
+            return FakeStartResp()
+        def list_executions(self, req):
+            # 前两次返回 Running，第三次返回 Success
+            self.calls += 1
+            if self.calls < 3:
+                return FakeListResp()
+            else:
+                class DoneExecution:
+                    execution_id = 'exec-1'
+                    status = 'Success'
+                    status_message = 'ok'
+                class DoneBody:
+                    executions = [DoneExecution()]
+                class DoneListResp:
+                    body = DoneBody()
+                return DoneListResp()
+    with patch('alibaba_cloud_ops_mcp_server.tools.oos_tools.create_client', return_value=FakeClient()), \
+         patch('time.sleep', return_value=None) as mock_sleep:
+        result = oos_tools._start_execution_sync('cn-test', 'tpl', {})
+        assert hasattr(result, 'executions')
+        assert mock_sleep.call_count >= 1

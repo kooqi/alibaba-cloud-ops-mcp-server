@@ -124,4 +124,32 @@ def test_get_api_body_style_none():
 def test_get_apis_in_service(mock_get):
     mock_get.return_value.json.return_value = {"apis": {"A": {}, "B": {}}}
     apis = api_meta_client.ApiMetaClient.get_apis_in_service('ecs', '2014-05-26')
-    assert set(apis) == {"A", "B"} 
+    assert set(apis) == {"A", "B"}
+
+@patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.requests.get')
+def test_get_response_from_pop_api_keyerror(mock_get):
+    # config 缺 key
+    with patch.object(api_meta_client.ApiMetaClient, 'config', {'GetProductList': {}}):
+        with pytest.raises(UnboundLocalError) as e:
+            api_meta_client.ApiMetaClient.get_response_from_pop_api('GetProductList')
+        assert 'cannot access local variable' in str(e.value)
+
+@patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.ApiMetaClient.get_api_meta', return_value=({}, '2014-05-26'))
+def test_get_response_from_api_meta_no_properties(mock_get_meta):
+    # property_values 取不到属性
+    with patch.dict('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.__dict__', {'RESPONSES': 'responses', 'HTTP_SUCCESS_CODE': '200', 'SCHEMA': 'schema', 'PROPERTIES': 'properties'}):
+        prop, ver = api_meta_client.ApiMetaClient.get_response_from_api_meta('ecs', 'DescribeInstances')
+        assert prop == {}
+        assert ver == '2014-05-26'
+
+def test_get_api_parameters_empty():
+    # parameters 为空
+    with patch.object(api_meta_client.ApiMetaClient, 'get_api_meta', return_value=({'parameters': []}, '2014-05-26')):
+        params = api_meta_client.ApiMetaClient.get_api_parameters('ecs', 'DescribeInstances')
+        assert params == []
+
+@patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.requests.get')
+def test_get_apis_in_service_no_apis(mock_get):
+    mock_get.return_value.json.return_value = {}
+    with pytest.raises(KeyError):
+        api_meta_client.ApiMetaClient.get_apis_in_service('ecs', '2014-05-26')
