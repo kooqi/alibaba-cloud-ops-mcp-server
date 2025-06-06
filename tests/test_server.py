@@ -15,4 +15,16 @@ def test_main_run(mock_create_api_tools, mock_FastMCP):
         mock_FastMCP.assert_called_once_with(name='alibaba-cloud-ops-mcp-server', port=12345)
         assert mcp.add_tool.call_count == 3  # oss/oos/cms 各1
         mock_create_api_tools.assert_called_once()
-        mcp.run.assert_called_once_with(transport='stdio') 
+        mcp.run.assert_called_once_with(transport='stdio')
+
+def test_run_as_main(monkeypatch):
+    import runpy, sys
+    from alibaba_cloud_ops_mcp_server import server
+    monkeypatch.setattr(server, 'main', lambda *a, **kw: None)
+    monkeypatch.setattr(sys, 'argv', ['server.py'])
+    import mcp.server.fastmcp
+    monkeypatch.setattr(mcp.server.fastmcp.FastMCP, 'run', lambda self, **kwargs: None)
+    import pytest
+    with pytest.raises(SystemExit) as e:
+        runpy.run_path('src/alibaba_cloud_ops_mcp_server/server.py', run_name='__main__')
+    assert e.value.code == 0 

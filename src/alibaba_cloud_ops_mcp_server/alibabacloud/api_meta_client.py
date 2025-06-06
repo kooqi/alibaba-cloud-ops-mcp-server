@@ -30,12 +30,13 @@ class ApiMetaClient:
 
     @classmethod
     def get_response_from_pop_api(cls, pop_api_name, service=None, api=None, version=None):
+        url = None  # 提前定义，防止 except 中引用未定义变量
         try:
             api_config = cls.config.get(pop_api_name)
             try:
                 formatted_path = api_config[cls.PATH].format(service=service, api=api, version=version)
             except KeyError as e:
-                raise Exception(f'Failed to format path, path: {api_config[cls.PATH]}, error: {e}')
+                raise Exception(f'Failed to format path, path: {api_config.get(cls.PATH)}, error: {e}')
 
             url = f'{cls.BASE_URL}/{formatted_path}'
             response = requests.get(url)

@@ -88,4 +88,42 @@ def test_create_api_tools():
         mcp = DummyMCP()
         config = {'ecs': ['DescribeInstances', 'StartInstance'], 'rds': ['DescribeDBInstances']}
         api_tools.create_api_tools(mcp, config)
-        assert mock_create.call_count == 3 
+        assert mock_create.call_count == 3
+
+def test_create_function_schemas_ignore_dot():
+    api_meta = {
+        'parameters': [
+            {'name': 'foo.bar', 'schema': {'type': 'string'}},
+            {'name': 'baz', 'schema': {'type': 'string'}},
+        ]
+    }
+    schemas = api_tools._create_function_schemas('ecs', 'TestApi', api_meta)
+    assert 'foo.bar' not in schemas['TestApi']
+    assert 'baz' in schemas['TestApi']
+
+def test_create_function_schemas_no_regionid():
+    api_meta = {
+        'parameters': [
+            {'name': 'foo', 'schema': {'type': 'string'}},
+        ]
+    }
+    schemas = api_tools._create_function_schemas('ecs', 'TestApi', api_meta)
+    assert 'RegionId' in schemas['TestApi']
+
+# 说明：由于 _create_tool_function_with_signature 生成的参数总有默认值，signature.bind 不会因缺参数抛 TypeError，故无法覆盖该异常分支。
+
+def test_create_client_str_service():
+    with patch('alibaba_cloud_ops_mcp_server.tools.api_tools.OpenApiClient') as mock_client, \
+         patch('alibaba_cloud_ops_mcp_server.tools.api_tools.create_config') as mock_cfg:
+        mock_cfg.return_value = MagicMock()
+        client = api_tools.create_client(service='ecs', region_id='cn-test')
+        assert mock_client.called
+        assert mock_cfg.return_value.endpoint == 'ecs.cn-test.aliyuncs.com'
+
+def test_create_and_decorate_tool_api_meta_exception():
+    # 覆盖 _create_and_decorate_tool 的异常分支
+    with patch('alibaba_cloud_ops_mcp_server.tools.api_tools.ApiMetaClient.get_api_meta', side_effect=Exception('meta-fail')):
+        mcp = DummyMCP()
+        with pytest.raises(Exception) as e:
+            api_tools._create_and_decorate_tool(mcp, 'ecs', 'DescribeInstances')
+        assert 'meta-fail' in str(e.value)
