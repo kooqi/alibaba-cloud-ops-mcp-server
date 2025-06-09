@@ -153,3 +153,24 @@ def test_get_apis_in_service_no_apis(mock_get):
     mock_get.return_value.json.return_value = {}
     with pytest.raises(KeyError):
         api_meta_client.ApiMetaClient.get_apis_in_service('ecs', '2014-05-26')
+
+@patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.requests.get')
+def test_get_api_parameters_schema_not_dict(mock_get):
+    # get_api_meta返回的schema不是dict
+    api_meta = {
+        'parameters': [
+            {'name': 'foo', 'in': 'query', 'schema': None},
+            {'name': 'bar', 'in': 'query', 'schema': 'notadict'}
+        ]
+    }
+    with patch.object(api_meta_client.ApiMetaClient, 'get_api_meta', return_value=(api_meta, '2014-05-26')):
+        params = api_meta_client.ApiMetaClient.get_api_parameters('ecs', 'DescribeInstances')
+        # 两个参数都应该被返回
+        assert 'foo' in params
+        assert 'bar' in params
+
+@patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.requests.get')
+def test_get_apis_in_service_normal(mock_get):
+    mock_get.return_value.json.return_value = {"apis": {"A": {}, "B": {}}}
+    apis = api_meta_client.ApiMetaClient.get_apis_in_service('ecs', '2014-05-26')
+    assert set(apis) == {"A", "B"}

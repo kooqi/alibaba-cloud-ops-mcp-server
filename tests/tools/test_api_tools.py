@@ -229,3 +229,21 @@ def test_tools_api_call_ecs_list_parameters_non_list():
         query_args = mock_OpenApiUtilClient.query.call_args[0][0]
         assert query_args['InstanceIds'] == 'i-123'
         assert query_args['SecurityGroupIds'] is None
+
+def test_create_and_decorate_tool_normal():
+    # mock api_meta有summary
+    api_meta = {
+        'parameters': [
+            {'name': 'foo', 'schema': {'type': 'string'}}
+        ],
+        'summary': 'desc'
+    }
+    class DummyMCP:
+        def tool(self, name):
+            def decorator(fn):
+                return fn
+            return decorator
+    with patch('alibaba_cloud_ops_mcp_server.tools.api_tools.ApiMetaClient.get_api_meta', return_value=(api_meta, '2023-01-01')):
+        mcp = DummyMCP()
+        fn = api_tools._create_and_decorate_tool(mcp, 'ecs', 'DescribeInstances')
+        assert callable(fn)
