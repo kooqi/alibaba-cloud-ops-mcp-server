@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from alibaba_cloud_ops_mcp_server.tools import api_tools
+import json
 
 def fake_api_meta(post=False, no_summary=False):
     meta = {
@@ -127,3 +128,104 @@ def test_create_and_decorate_tool_api_meta_exception():
         with pytest.raises(Exception) as e:
             api_tools._create_and_decorate_tool(mcp, 'ecs', 'DescribeInstances')
         assert 'meta-fail' in str(e.value)
+
+def test_create_function_schemas_ecs_list_parameters():
+    # 测试ECS服务的特殊参数处理
+    api_meta = {
+        'parameters': [
+            {'name': 'InstanceIds', 'schema': {'type': 'string', 'description': '实例ID列表', 'example': '["i-123", "i-456"]', 'required': True}},
+            {'name': 'SecurityGroupIds', 'schema': {'type': 'string', 'description': '安全组ID列表', 'example': '["sg-123", "sg-456"]', 'required': False}},
+            {'name': 'NormalParam', 'schema': {'type': 'string', 'description': '普通参数', 'example': 'test', 'required': False}},
+        ],
+        'methods': ['get'],
+        'path': '/test',
+        'summary': '测试API'
+    }
+    
+    # 测试ECS服务
+    schemas = api_tools._create_function_schemas('ecs', 'DescribeInstances', api_meta)
+    assert schemas['DescribeInstances']['InstanceIds'][0] == list
+    assert schemas['DescribeInstances']['SecurityGroupIds'][0] == list
+    assert schemas['DescribeInstances']['NormalParam'][0] == str
+    
+    # 测试非ECS服务
+    schemas = api_tools._create_function_schemas('rds', 'DescribeInstances', api_meta)
+    assert schemas['DescribeInstances']['InstanceIds'][0] == str
+    assert schemas['DescribeInstances']['SecurityGroupIds'][0] == str
+    assert schemas['DescribeInstances']['NormalParam'][0] == str
+
+def test_tools_api_call_ecs_list_parameters():
+    with patch('alibaba_cloud_ops_mcp_server.tools.api_tools.ApiMetaClient') as mock_ApiMetaClient, \
+         patch('alibaba_cloud_ops_mcp_server.tools.api_tools.create_client') as mock_create_client, \
+         patch('alibaba_cloud_ops_mcp_server.tools.api_tools.open_api_models') as mock_open_api_models, \
+         patch('alibaba_cloud_ops_mcp_server.tools.api_tools.OpenApiUtilClient') as mock_OpenApiUtilClient, \
+         patch('alibaba_cloud_ops_mcp_server.tools.api_tools.util_models') as mock_util_models:
+        
+        mock_ApiMetaClient.get_api_meta.return_value = fake_api_meta()
+        mock_ApiMetaClient.get_service_version.return_value = '2023-01-01'
+        mock_ApiMetaClient.get_service_style.return_value = 'RPC'
+        mock_open_api_models.OpenApiRequest.return_value = MagicMock()
+        mock_open_api_models.Params.return_value = MagicMock()
+        mock_create_client.return_value.call_api.return_value = {'result': 'ok'}
+        mock_OpenApiUtilClient.query.return_value = {}
+        mock_util_models.RuntimeOptions.return_value = MagicMock()
+
+        # 测试ECS服务的列表参数转换
+        params = {
+            'InstanceIds': ['i-123', 'i-456'],
+            'SecurityGroupIds': ['sg-123', 'sg-456'],
+            'NormalParam': 'test',
+            'RegionId': 'cn-hangzhou'
+        }
+        
+        # 测试ECS服务
+        result = api_tools._tools_api_call('ecs', 'DescribeInstances', params, None)
+        # 验证传入query方法的参数
+        query_args = mock_OpenApiUtilClient.query.call_args[0][0]
+        assert isinstance(query_args['InstanceIds'], str)
+        assert isinstance(query_args['SecurityGroupIds'], str)
+        assert query_args['NormalParam'] == 'test'
+        assert json.loads(query_args['InstanceIds']) == ['i-123', 'i-456']
+        assert json.loads(query_args['SecurityGroupIds']) == ['sg-123', 'sg-456']
+        
+        # 重置mock
+        mock_OpenApiUtilClient.query.reset_mock()
+        
+        # 测试非ECS服务
+        result = api_tools._tools_api_call('rds', 'DescribeInstances', params, None)
+        # 验证传入query方法的参数
+        query_args = mock_OpenApiUtilClient.query.call_args[0][0]
+        assert isinstance(query_args['InstanceIds'], list)
+        assert isinstance(query_args['SecurityGroupIds'], list)
+        assert query_args['InstanceIds'] == ['i-123', 'i-456']
+        assert query_args['SecurityGroupIds'] == ['sg-123', 'sg-456']
+
+def test_tools_api_call_ecs_list_parameters_non_list():
+    with patch('alibaba_cloud_ops_mcp_server.tools.api_tools.ApiMetaClient') as mock_ApiMetaClient, \
+         patch('alibaba_cloud_ops_mcp_server.tools.api_tools.create_client') as mock_create_client, \
+         patch('alibaba_cloud_ops_mcp_server.tools.api_tools.open_api_models') as mock_open_api_models, \
+         patch('alibaba_cloud_ops_mcp_server.tools.api_tools.OpenApiUtilClient') as mock_OpenApiUtilClient, \
+         patch('alibaba_cloud_ops_mcp_server.tools.api_tools.util_models') as mock_util_models:
+        
+        mock_ApiMetaClient.get_api_meta.return_value = fake_api_meta()
+        mock_ApiMetaClient.get_service_version.return_value = '2023-01-01'
+        mock_ApiMetaClient.get_service_style.return_value = 'RPC'
+        mock_open_api_models.OpenApiRequest.return_value = MagicMock()
+        mock_open_api_models.Params.return_value = MagicMock()
+        mock_create_client.return_value.call_api.return_value = {'result': 'ok'}
+        mock_OpenApiUtilClient.query.return_value = {}
+        mock_util_models.RuntimeOptions.return_value = MagicMock()
+
+        # 测试非列表类型的特殊参数
+        params = {
+            'InstanceIds': 'i-123',  # 字符串而不是列表
+            'SecurityGroupIds': None,  # None值
+            'RegionId': 'cn-hangzhou'
+        }
+        
+        # 测试ECS服务
+        result = api_tools._tools_api_call('ecs', 'DescribeInstances', params, None)
+        # 验证传入query方法的参数
+        query_args = mock_OpenApiUtilClient.query.call_args[0][0]
+        assert query_args['InstanceIds'] == 'i-123'
+        assert query_args['SecurityGroupIds'] is None
