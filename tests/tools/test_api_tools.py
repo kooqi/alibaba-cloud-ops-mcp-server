@@ -231,7 +231,7 @@ def test_tools_api_call_ecs_list_parameters_non_list():
         assert query_args['SecurityGroupIds'] is None
 
 def test_create_and_decorate_tool_normal():
-    # mock api_meta有summary
+    """测试_create_and_decorate_tool方法的正常执行路径"""
     api_meta = {
         'parameters': [
             {'name': 'foo', 'schema': {'type': 'string'}}
@@ -247,6 +247,8 @@ def test_create_and_decorate_tool_normal():
         mcp = DummyMCP()
         fn = api_tools._create_and_decorate_tool(mcp, 'ecs', 'DescribeInstances')
         assert callable(fn)
+        # 验证函数名称
+        assert fn.__name__ == 'ECS_DESCRIBEINSTANCES'
 
 def test_create_and_decorate_tool_with_required_field():
     """测试_create_and_decorate_tool方法处理required字段的情况"""
@@ -287,3 +289,27 @@ def test_create_and_decorate_tool_with_ecs_list_parameter():
         assert callable(fn)
         # 验证ECS特殊参数被设置为list类型
         assert fn.__annotations__['InstanceIds'] == list
+
+def test_create_and_decorate_tool_complete_flow():
+    """测试_create_and_decorate_tool方法的完整流程"""
+    api_meta = {
+        'parameters': [
+            {'name': 'RegionId', 'schema': {'type': 'string', 'required': False}},
+            {'name': 'InstanceId', 'schema': {'type': 'string', 'required': True}}
+        ],
+        'summary': 'Describe ECS instances'
+    }
+    class DummyMCP:
+        def tool(self, name):
+            def decorator(fn):
+                return fn
+            return decorator
+    with patch('alibaba_cloud_ops_mcp_server.tools.api_tools.ApiMetaClient.get_api_meta', return_value=(api_meta, '2023-01-01')):
+        mcp = DummyMCP()
+        fn = api_tools._create_and_decorate_tool(mcp, 'ecs', 'DescribeInstances')
+        assert callable(fn)
+        # 验证所有关键属性都被设置
+        assert hasattr(fn, '__signature__')
+        assert hasattr(fn, '__annotations__')
+        assert hasattr(fn, '__doc__')
+        assert fn.__doc__ == 'Describe ECS instances'

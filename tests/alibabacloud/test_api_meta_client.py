@@ -171,13 +171,16 @@ def test_get_api_parameters_schema_not_dict(mock_get):
 
 @patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.requests.get')
 def test_get_apis_in_service_normal(mock_get):
-    mock_get.return_value.json.return_value = {"apis": {"A": {}, "B": {}}}
+    """测试get_apis_in_service方法正常返回API列表"""
+    mock_get.return_value.json.return_value = {"apis": {"DescribeInstances": {}, "StartInstance": {}}}
     apis = api_meta_client.ApiMetaClient.get_apis_in_service('ecs', '2014-05-26')
-    assert set(apis) == {"A", "B"}
+    assert set(apis) == {"DescribeInstances", "StartInstance"}
+    assert len(apis) == 2
 
 @patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.ApiMetaClient.get_service_version', return_value='2014-05-26')
 @patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.ApiMetaClient.get_standard_service_and_api', return_value=(None, None))
-def test_get_api_meta_service_none_exception(mock_get_std, mock_get_ver):
+@patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.ApiMetaClient.get_response_from_pop_api')
+def test_get_api_meta_service_none_exception(mock_pop_api, mock_get_std, mock_get_ver):
     """测试get_api_meta方法中service_standard为None时抛出异常"""
     with pytest.raises(Exception) as e:
         api_meta_client.ApiMetaClient.get_api_meta('ecs', 'DescribeInstances')
@@ -185,7 +188,8 @@ def test_get_api_meta_service_none_exception(mock_get_std, mock_get_ver):
 
 @patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.ApiMetaClient.get_service_version', return_value='2014-05-26')
 @patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.ApiMetaClient.get_standard_service_and_api', return_value=('ecs', None))
-def test_get_api_meta_api_none_exception(mock_get_std, mock_get_ver):
+@patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.ApiMetaClient.get_response_from_pop_api')
+def test_get_api_meta_api_none_exception(mock_pop_api, mock_get_std, mock_get_ver):
     """测试get_api_meta方法中api_standard为None时抛出异常"""
     with pytest.raises(Exception) as e:
         api_meta_client.ApiMetaClient.get_api_meta('ecs', 'DescribeInstances')
@@ -199,16 +203,18 @@ def test_get_api_parameters_schema_not_dict_more_cases(mock_get_meta):
             {'name': 'foo', 'in': 'query', 'schema': 'string'},  # 字符串
             {'name': 'bar', 'in': 'query', 'schema': 123},       # 数字
             {'name': 'baz', 'in': 'query', 'schema': []},        # 列表
+            {'name': 'qux', 'in': 'query', 'schema': None},      # None
         ]
     }
-    with patch.object(api_meta_client.ApiMetaClient, 'get_api_meta', return_value=(api_meta, '2014-05-26')):
-        params = api_meta_client.ApiMetaClient.get_api_parameters('ecs', 'DescribeInstances')
-        assert 'foo' in params
-        assert 'bar' in params
-        assert 'baz' in params
+    mock_get_meta.return_value = (api_meta, '2014-05-26')
+    params = api_meta_client.ApiMetaClient.get_api_parameters('ecs', 'DescribeInstances')
+    assert 'foo' in params
+    assert 'bar' in params
+    assert 'baz' in params
+    assert 'qux' in params
 
 @patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.requests.get')
-def test_get_apis_in_service_with_apis(mock_get):
+def test_get_apis_in_service_normal(mock_get):
     """测试get_apis_in_service方法正常返回API列表"""
     mock_get.return_value.json.return_value = {"apis": {"DescribeInstances": {}, "StartInstance": {}}}
     apis = api_meta_client.ApiMetaClient.get_apis_in_service('ecs', '2014-05-26')
