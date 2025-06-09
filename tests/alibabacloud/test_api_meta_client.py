@@ -244,3 +244,22 @@ def test_get_api_field_default_value(mock_get_meta):
     mock_get_meta.return_value = ({}, '2014-05-26')
     val = api_meta_client.ApiMetaClient.get_api_field('parameters', 'ecs', 'DescribeInstances', default='default_val')
     assert val == 'default_val'
+
+@patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.ApiMetaClient.get_api_meta')
+def test_get_api_parameters_nested_ref(mock_get_meta):
+    # 模拟嵌套 $ref
+    api_meta = {
+        'parameters': [
+            {'name': 'foo', 'in': 'query', 'schema': {'$ref': '#/defs/A'}}
+        ]
+    }
+    def fake_get_ref(data, service, version):
+        if '#/defs/A' in data.get('$ref', ''):
+            return {'properties': {'a': {'$ref': '#/defs/B'}}}
+        elif '#/defs/B' in data.get('$ref', ''):
+            return {'properties': {'b': {}}}
+        return {}
+    with patch.object(api_meta_client.ApiMetaClient, 'get_ref_api_meta', side_effect=fake_get_ref):
+        mock_get_meta.return_value = (api_meta, '2014-05-26')
+        params = api_meta_client.ApiMetaClient.get_api_parameters('ecs', 'DescribeInstances')
+        assert 'a' in params and 'b' in params  # 深层嵌套属性应被提取
