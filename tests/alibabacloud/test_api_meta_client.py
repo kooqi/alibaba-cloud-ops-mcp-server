@@ -263,3 +263,30 @@ def test_get_api_parameters_nested_ref(mock_get_meta):
         mock_get_meta.return_value = (api_meta, '2014-05-26')
         params = api_meta_client.ApiMetaClient.get_api_parameters('ecs', 'DescribeInstances')
         assert 'a' in params and 'b' in params  # 深层嵌套属性应被提取
+
+@patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.ApiMetaClient.get_standard_service_and_api', return_value=('ecs', 'api'))
+@patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.ApiMetaClient.get_response_from_pop_api')
+def test_get_ref_api_meta_valid_path(mock_pop_api, mock_std):
+    # 模拟 get_response_from_pop_api 返回包含 defs/A 的结构
+    mock_pop_api.return_value = {
+        'defs': {
+            'A': {
+                'properties': {
+                    'prop1': {'type': 'string'},
+                    'prop2': {'type': 'integer'}
+                }
+            }
+        }
+    }
+
+    # 调用 get_ref_api_meta，传入 $ref 指向 #/defs/A
+    result = api_meta_client.ApiMetaClient.get_ref_api_meta({'$ref': '#/defs/A'}, 'ecs', '2014-05-26')
+
+    # 验证返回结果是否与 defs/A 的结构一致
+    expected = {
+        'properties': {
+            'prop1': {'type': 'string'},
+            'prop2': {'type': 'integer'}
+        }
+    }
+    assert result == expected
