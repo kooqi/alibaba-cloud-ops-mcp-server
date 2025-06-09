@@ -2,6 +2,7 @@ import os
 from mcp.server.fastmcp import FastMCP, Context
 from pydantic import Field
 import logging
+import json
 
 import inspect
 import types
@@ -32,6 +33,15 @@ def create_client(service: str, region_id: str) -> OpenApiClient:
     return OpenApiClient(config)
 
 
+# 类型为String的JSON数组参数
+ECS_LIST_PARAMETERS = {
+    'HpcClusterIds', 'DedicatedHostClusterIds', 'DedicatedHostIds', 
+    'InstanceIds', 'DeploymentSetIds', 'KeyPairNames', 'SecurityGroupIds', 
+    'diskIds', 'repeatWeekdays', 'timePoints', 'DiskIds', 'SnapshotLinkIds', 
+    'EipAddresses', 'PublicIpAddresses', 'PrivateIpAddresses'
+}
+
+
 def _tools_api_call(service: str, api: str, parameters: dict, ctx: Context):
     service = service.lower()
     api_meta, _ = ApiMetaClient.get_api_meta(service, api)
@@ -39,8 +49,16 @@ def _tools_api_call(service: str, api: str, parameters: dict, ctx: Context):
     method = 'POST' if api_meta.get('methods', [])[0] == 'post' else 'GET'
     path = api_meta.get('path', '/')
     style = ApiMetaClient.get_service_style(service)
+    
+    # 处理特殊参数格式
+    processed_parameters = parameters.copy()
+    if service == 'ecs':
+        for param_name, param_value in parameters.items():
+            if param_name in ECS_LIST_PARAMETERS and isinstance(param_value, list):
+                processed_parameters[param_name] = json.dumps(param_value)
+    
     req = open_api_models.OpenApiRequest(
-        query=OpenApiUtilClient.query(parameters)
+        query=OpenApiUtilClient.query(processed_parameters)
     )
     params = open_api_models.Params(
         action=api,
@@ -53,7 +71,7 @@ def _tools_api_call(service: str, api: str, parameters: dict, ctx: Context):
         req_body_type='formData',
         body_type='json'
     )
-    client = create_client(service, parameters.get('RegionId', 'cn-hangzhou'))
+    client = create_client(service, processed_parameters.get('RegionId', 'cn-hangzhou'))
     runtime = util_models.RuntimeOptions()
     return client.call_api(params, req, runtime)
 
@@ -75,9 +93,15 @@ def _create_function_schemas(service, api, api_meta):
         description = schema.get('description', '')
         example = schema.get('example', '')
         type_ = schema.get('type', '')
-        description = f'{description} 请注意，提供参数要严格按照参数的类型和参数示例的提示，如果提到参数为String，且为一个 JSON 数组字符串，应在数组内使用单引号包裹对应的参数以避免转义问题，并在最外侧用双引号包裹以确保其是字符串，否则可能会导致参数解析错误。参数类型: {type_},参数示例：{example}'
+        description = f'{description} 参数类型: {type_},参数示例：{example}'
         required = schema.get('required', False)
-        python_type = type_map.get(type_, str)
+        
+        # 只有在service为ecs时，才对特定参数进行特殊处理
+        if service.lower() == 'ecs' and name in ECS_LIST_PARAMETERS:
+            python_type = list
+        else:
+            python_type = type_map.get(type_, str)
+            
         field_info = (
             python_type,
             field(
