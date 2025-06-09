@@ -97,7 +97,7 @@ def _create_function_schemas(service, api, api_meta):
         required = schema.get('required', False)
         
         # 只有在service为ecs时，才对特定参数进行特殊处理
-        if service.lower() == 'ecs' and name in ECS_LIST_PARAMETERS:
+        if service.lower() == 'ecs' and name in ECS_LIST_PARAMETERS and type_ == 'string':
             python_type = list
         else:
             python_type = type_map.get(type_, str)
