@@ -247,3 +247,43 @@ def test_create_and_decorate_tool_normal():
         mcp = DummyMCP()
         fn = api_tools._create_and_decorate_tool(mcp, 'ecs', 'DescribeInstances')
         assert callable(fn)
+
+def test_create_and_decorate_tool_with_required_field():
+    """测试_create_and_decorate_tool方法处理required字段的情况"""
+    api_meta = {
+        'parameters': [
+            {'name': 'foo', 'schema': {'type': 'string', 'required': True}}
+        ],
+        'summary': 'desc'
+    }
+    class DummyMCP:
+        def tool(self, name):
+            def decorator(fn):
+                return fn
+            return decorator
+    with patch('alibaba_cloud_ops_mcp_server.tools.api_tools.ApiMetaClient.get_api_meta', return_value=(api_meta, '2023-01-01')):
+        mcp = DummyMCP()
+        fn = api_tools._create_and_decorate_tool(mcp, 'ecs', 'DescribeInstances')
+        assert callable(fn)
+        # 验证函数签名包含required参数
+        assert 'foo' in fn.__annotations__
+
+def test_create_and_decorate_tool_with_ecs_list_parameter():
+    """测试_create_and_decorate_tool方法处理ECS列表参数的情况"""
+    api_meta = {
+        'parameters': [
+            {'name': 'InstanceIds', 'schema': {'type': 'string', 'required': False}}
+        ],
+        'summary': 'desc'
+    }
+    class DummyMCP:
+        def tool(self, name):
+            def decorator(fn):
+                return fn
+            return decorator
+    with patch('alibaba_cloud_ops_mcp_server.tools.api_tools.ApiMetaClient.get_api_meta', return_value=(api_meta, '2023-01-01')):
+        mcp = DummyMCP()
+        fn = api_tools._create_and_decorate_tool(mcp, 'ecs', 'DescribeInstances')
+        assert callable(fn)
+        # 验证ECS特殊参数被设置为list类型
+        assert fn.__annotations__['InstanceIds'] == list
