@@ -220,3 +220,27 @@ def test_get_apis_in_service_normal(mock_get):
     apis = api_meta_client.ApiMetaClient.get_apis_in_service('ecs', '2014-05-26')
     assert set(apis) == {"DescribeInstances", "StartInstance"}
     assert len(apis) == 2
+
+
+@patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.ApiMetaClient.get_standard_service_and_api', return_value=('ecs', 'api'))
+@patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.ApiMetaClient.get_response_from_pop_api')
+def test_get_ref_api_meta_invalid_path(mock_pop_api, mock_std):
+    # 模拟 ref_path 指向不存在的 key
+    mock_pop_api.return_value = {'apis': {'DescribeInstances': {}}}
+    with pytest.raises(KeyError):
+        api_meta_client.ApiMetaClient.get_ref_api_meta({'$ref': '#/notfound'}, 'ecs', '2014-05-26')
+
+@patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.ApiMetaClient.get_standard_service_and_api', return_value=('ecs', 'api'))
+@patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.ApiMetaClient.get_response_from_pop_api')
+def test_get_ref_api_meta_invalid_path(mock_pop_api, mock_std):
+    # 模拟 ref_path 指向不存在的 key
+    mock_pop_api.return_value = {'apis': {'DescribeInstances': {}}}
+    with pytest.raises(KeyError):
+        api_meta_client.ApiMetaClient.get_ref_api_meta({'$ref': '#/notfound'}, 'ecs', '2014-05-26')
+
+@patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.ApiMetaClient.get_api_meta')
+def test_get_api_field_default_value(mock_get_meta):
+    # 模拟 get_api_meta 返回无 field_type 的数据
+    mock_get_meta.return_value = ({}, '2014-05-26')
+    val = api_meta_client.ApiMetaClient.get_api_field('parameters', 'ecs', 'DescribeInstances', default='default_val')
+    assert val == 'default_val'
