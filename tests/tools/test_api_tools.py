@@ -229,3 +229,96 @@ def test_tools_api_call_ecs_list_parameters_non_list():
         query_args = mock_OpenApiUtilClient.query.call_args[0][0]
         assert query_args['InstanceIds'] == 'i-123'
         assert query_args['SecurityGroupIds'] is None
+
+def test_create_tool_function_with_signature_bind_and_apply_defaults():
+    """测试func_code函数中的signature.bind和apply_defaults调用"""
+    api_meta = {
+        'parameters': [
+            {'name': 'param1', 'schema': {'type': 'string', 'required': False}},
+            {'name': 'param2', 'schema': {'type': 'integer', 'required': True}}
+        ],
+        'summary': 'Test function'
+    }
+    
+    schemas = api_tools._create_function_schemas('test', 'TestApi', api_meta)
+    fields = schemas['TestApi']
+    
+    # 创建函数
+    func = api_tools._create_tool_function_with_signature('test', 'TestApi', fields, 'Test function')
+    
+    # 测试函数调用，确保执行到signature.bind和apply_defaults
+    with patch('alibaba_cloud_ops_mcp_server.tools.api_tools._tools_api_call') as mock_call:
+        mock_call.return_value = {'result': 'success'}
+        
+        # 调用函数，传入部分参数，让apply_defaults生效
+        result = func(param2=123)  # 只传入required参数，让param1使用默认值
+        
+        # 验证_tools_api_call被调用
+        mock_call.assert_called_once()
+        call_args = mock_call.call_args[1]['parameters']
+        
+        # 验证参数绑定和默认值应用
+        assert 'param1' in call_args  # 默认值被应用
+        assert call_args['param2'] == 123  # 传入的参数
+
+def test_create_tool_function_with_signature_bind_with_all_args():
+    """测试func_code函数中传入所有参数的情况"""
+    api_meta = {
+        'parameters': [
+            {'name': 'param1', 'schema': {'type': 'string', 'required': False}},
+            {'name': 'param2', 'schema': {'type': 'integer', 'required': False}}
+        ],
+        'summary': 'Test function'
+    }
+    
+    schemas = api_tools._create_function_schemas('test', 'TestApi', api_meta)
+    fields = schemas['TestApi']
+    
+    # 创建函数
+    func = api_tools._create_tool_function_with_signature('test', 'TestApi', fields, 'Test function')
+    
+    # 测试传入所有参数
+    with patch('alibaba_cloud_ops_mcp_server.tools.api_tools._tools_api_call') as mock_call:
+        mock_call.return_value = {'result': 'success'}
+        
+        # 传入所有参数
+        result = func(param1='value1', param2=456)
+        
+        # 验证_tools_api_call被调用
+        mock_call.assert_called_once()
+        call_args = mock_call.call_args[1]['parameters']
+        
+        # 验证所有参数都被正确传递
+        assert call_args['param1'] == 'value1'
+        assert call_args['param2'] == 456
+
+def test_create_tool_function_with_signature_bind_with_positional_args():
+    """测试func_code函数中使用位置参数的情况"""
+    api_meta = {
+        'parameters': [
+            {'name': 'param1', 'schema': {'type': 'string', 'required': False}},
+            {'name': 'param2', 'schema': {'type': 'integer', 'required': False}}
+        ],
+        'summary': 'Test function'
+    }
+    
+    schemas = api_tools._create_function_schemas('test', 'TestApi', api_meta)
+    fields = schemas['TestApi']
+    
+    # 创建函数
+    func = api_tools._create_tool_function_with_signature('test', 'TestApi', fields, 'Test function')
+    
+    # 测试使用位置参数
+    with patch('alibaba_cloud_ops_mcp_server.tools.api_tools._tools_api_call') as mock_call:
+        mock_call.return_value = {'result': 'success'}
+        
+        # 使用位置参数调用
+        result = func('value1', 789)
+        
+        # 验证_tools_api_call被调用
+        mock_call.assert_called_once()
+        call_args = mock_call.call_args[1]['parameters']
+        
+        # 验证位置参数被正确绑定
+        assert call_args['param1'] == 'value1'
+        assert call_args['param2'] == 789
