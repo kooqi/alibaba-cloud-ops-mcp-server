@@ -14,7 +14,6 @@ from alibabacloud_openapi_util.client import Client as OpenApiUtilClient
 from alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client import ApiMetaClient
 from alibaba_cloud_ops_mcp_server.alibabacloud.utils import create_config
 
-logger = logging.getLogger(__name__)
 
 type_map = {
     'string': str,
@@ -56,9 +55,7 @@ def _tools_api_call(service: str, api: str, parameters: dict, ctx: Context):
     if service == 'ecs':
         for param_name, param_value in parameters.items():
             if param_name in ECS_LIST_PARAMETERS and isinstance(param_value, list):
-                logger.info(f'{service} {api} {param_name}: {param_value} is a JSON array parameter, convert to JSON string')
                 processed_parameters[param_name] = json.dumps(param_value)
-                logger.info(f'{service} {api} {param_name}: {json.dumps(param_value)}')
     
     req = open_api_models.OpenApiRequest(
         query=OpenApiUtilClient.query(processed_parameters)
