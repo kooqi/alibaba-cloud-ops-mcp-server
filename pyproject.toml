@@ -1,6 +1,6 @@
 [project]
 name = "alibaba-cloud-ops-mcp-server"
-version = "0.8.8"
+version = "0.8.9"
 description = "A MCP server for Alibaba Cloud"
 readme = "README.md"
 authors = [
