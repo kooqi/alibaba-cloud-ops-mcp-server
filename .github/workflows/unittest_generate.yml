@@ -1,6 +1,8 @@
 name: Run the qodo-cover-pr action
 
 on:
+  push:
+    branches: [ test_ut ]
   pull_request:
     branches:
       - main
