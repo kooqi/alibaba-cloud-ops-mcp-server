@@ -15,13 +15,8 @@ permissions:
 
 jobs:
   run-qodo-cover-pr-python:
-    # Only run if:
-    # 1. PR has the qodo-cover label
-    # 2. PR is open (not closed or draft)
-    if: |
-      contains(github.event.label.name, 'qodo-cover') &&
-      github.event.pull_request.state == 'open' &&
-      github.event.pull_request.draft == false
+    # Only run on push events to test_ut branch
+    if: github.event_name == 'push'
     runs-on: ubuntu-22.04
     steps:
       - name: Check out repo
