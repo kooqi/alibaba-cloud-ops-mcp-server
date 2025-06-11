@@ -1,0 +1,47 @@
+name: Run the qodo-cover-pr action
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - labeled
+
+permissions:
+  pull-requests: write  # Allows commenting on pull requests
+  contents: write  # Allows reading files and creating pull requests
+
+jobs:
+  run-qodo-cover-pr-python:
+    # Only run if:
+    # 1. PR has the qodo-cover label
+    # 2. PR is open (not closed or draft)
+    if: |
+      contains(github.event.label.name, 'qodo-cover') &&
+      github.event.pull_request.state == 'open' &&
+      github.event.pull_request.draft == false
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+
+      # ... set up your environment, e.g., install dependencies, etc.
+
+      - name: qodo-cover-pr
+        uses: qodo-ai/qodo-ci/.github/actions/qodo-cover-pr@v0.1.12
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          project_language: python
+          project_root: .
+          code_coverage_report_path: ./coverage.xml
+          coverage_type: cobertura
+          test_command: "pytest --cov=. --cov-report=xml --cov-report=term" # your test command
+          model: gpt-4o-2024-11-20
+          max_iterations: 3
+          desired_coverage: 100
+          run_each_test_separately: true
+          source_folder: .
+          test_folder: .
+          additional_instructions: "Make sure all tests include detailed docstrings explaining what they're testing"
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
