@@ -23,6 +23,15 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0  # 获取完整历史记录
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Debug Git info
+        run: |
+          echo "Current branch: $(git branch --show-current)"
+          echo "Git status:"
+          git status
+          echo "Git log (last 5 commits):"
+          git log --oneline -5
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -37,6 +46,12 @@ jobs:
           pip install -e .
           # 安装开发依赖
           pip install pytest>=8.4.0 pytest-cov>=6.1.1
+        env:
+          PYTHONPATH: ${{ github.workspace }}/src
+
+      - name: Run tests first
+        run: |
+          pytest tests/ --cov=src/ --cov-report=xml --cov-report=term
         env:
           PYTHONPATH: ${{ github.workspace }}/src
 
@@ -55,6 +70,5 @@ jobs:
           run_each_test_separately: true
           source_folder: src/
           test_folder: tests/
-          additional_instructions: "Make sure all tests include detailed docstrings explaining what they're testing"
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
