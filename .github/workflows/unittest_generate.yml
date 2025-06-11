@@ -46,6 +46,8 @@ jobs:
           pip install -e .
           # 安装开发依赖
           pip install pytest>=8.4.0 pytest-cov>=6.1.1
+          # 安装jedi-language-server
+          pip install jedi-language-server
         env:
           PYTHONPATH: ${{ github.workspace }}/src
 
@@ -57,6 +59,21 @@ jobs:
 
       - name: Run qodo cover locally
         run: |
+          # 确保jedi-language-server已安装
+          if ! command -v jedi-language-server &> /dev/null; then
+            echo "Installing jedi-language-server..."
+            pip install jedi-language-server
+          fi
+          
+          # 验证jedi-language-server安装
+          echo "Checking jedi-language-server installation:"
+          which jedi-language-server
+          jedi-language-server --version || echo "jedi-language-server installed but version check failed"
+          
+          # 设置PATH以确保能找到jedi-language-server
+          export PATH="$HOME/.local/bin:$PATH"
+          echo "Updated PATH: $PATH"
+          
           # 下载 cover-agent-pro
           BINARY_PATH="/usr/local/bin/cover-agent-pro"
           ACTION_REF="v0.1.12"
@@ -92,3 +109,4 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PYTHONPATH: ${{ github.workspace }}/src
+          PATH: ${{ github.workspace }}/.venv/bin:$HOME/.local/bin:$PATH
