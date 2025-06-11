@@ -21,8 +21,24 @@ jobs:
     steps:
       - name: Check out repo
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # 获取完整历史记录
 
-      # ... set up your environment, e.g., install dependencies, etc.
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov
+          # 安装项目依赖
+          pip install -e .
+          # 安装开发依赖
+          pip install pytest>=8.4.0 pytest-cov>=6.1.1
+        env:
+          PYTHONPATH: ${{ github.workspace }}/src
 
       - name: qodo-cover-pr
         uses: qodo-ai/qodo-ci/.github/actions/qodo-cover-pr@v0.1.12
@@ -32,12 +48,13 @@ jobs:
           project_root: .
           code_coverage_report_path: ./coverage.xml
           coverage_type: cobertura
-          test_command: "pytest --cov=. --cov-report=xml --cov-report=term" # your test command
+          test_command: "pytest tests/ --cov=src/ --cov-report=xml --cov-report=term"
           model: gpt-4o-2024-11-20
           max_iterations: 3
           desired_coverage: 100
           run_each_test_separately: true
-          source_folder: .
-          test_folder: .
+          source_folder: src/
+          test_folder: tests/
+          additional_instructions: "Make sure all tests include detailed docstrings explaining what they're testing"
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
