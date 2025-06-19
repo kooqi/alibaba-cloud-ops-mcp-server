@@ -37,7 +37,7 @@ jobs:
           coverage_type: cobertura
           test_command: "pytest --cov=. --cov-report=xml --cov-report=term"
           model: qwen-max # 这里替换为你的Qwen模型名
-          llm_base_url: https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation # 这里替换为你的Qwen API地址
+          llm_base_url: https://dashscope.aliyuncs.com/compatible-mode/v1 # 这里替换为你的Qwen API地址
           max_iterations: 3
           desired_coverage: 100
           run_each_test_separately: true
