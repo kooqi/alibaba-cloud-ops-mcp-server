@@ -39,6 +39,8 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 }
 ```
 
+[详细参数说明见 MCP 启动参数文档](./README_mcp_args.md)
+
 ## MCP市场集成
 
 * [Cline](https://cline.bot/mcp-marketplace)

@@ -39,6 +39,8 @@ To use `alibaba-cloud-ops-mcp-server` MCP Server with any other MCP Client, you 
 }
 ```
 
+[For detailed parameter description, see MCP startup parameter document](./README_mcp_args.md)
+
 ## MCP Maketplace Integration
 
 * [Cline](https://cline.bot/mcp-marketplace)

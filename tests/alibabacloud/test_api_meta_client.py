@@ -122,8 +122,12 @@ def test_get_api_body_style_none():
 
 @patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.requests.get')
 def test_get_apis_in_service(mock_get):
-    mock_get.return_value.json.return_value = {"apis": {"A": {}, "B": {}}}
-    apis = api_meta_client.ApiMetaClient.get_apis_in_service('ecs', '2014-05-26')
+    # 第一次调用 get_service_version 需要 list，第二次 get_response_from_pop_api 需要 dict
+    mock_get.return_value.json.side_effect = [
+        [{"code": "ecs", "defaultVersion": "2014-05-26"}],  # for get_service_version
+        {"apis": {"A": {}, "B": {}}}  # for get_response_from_pop_api
+    ]
+    apis = api_meta_client.ApiMetaClient.get_apis_in_service('ecs')
     assert set(apis) == {"A", "B"}
 
 @patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.requests.get')
@@ -152,7 +156,7 @@ def test_get_api_parameters_empty():
 def test_get_apis_in_service_no_apis(mock_get):
     mock_get.return_value.json.return_value = {}
     with pytest.raises(KeyError):
-        api_meta_client.ApiMetaClient.get_apis_in_service('ecs', '2014-05-26')
+        api_meta_client.ApiMetaClient.get_apis_in_service('ecs')
 
 @patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.requests.get')
 def test_get_api_parameters_schema_not_dict(mock_get):
@@ -172,8 +176,11 @@ def test_get_api_parameters_schema_not_dict(mock_get):
 @patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.requests.get')
 def test_get_apis_in_service_normal(mock_get):
     """测试get_apis_in_service方法正常返回API列表"""
-    mock_get.return_value.json.return_value = {"apis": {"DescribeInstances": {}, "StartInstance": {}}}
-    apis = api_meta_client.ApiMetaClient.get_apis_in_service('ecs', '2014-05-26')
+    mock_get.return_value.json.side_effect = [
+        [{"code": "ecs", "defaultVersion": "2014-05-26"}],  # for get_service_version
+        {"apis": {"DescribeInstances": {}, "StartInstance": {}}}  # for get_response_from_pop_api
+    ]
+    apis = api_meta_client.ApiMetaClient.get_apis_in_service('ecs')
     assert set(apis) == {"DescribeInstances", "StartInstance"}
     assert len(apis) == 2
 
@@ -216,8 +223,11 @@ def test_get_api_parameters_schema_not_dict_more_cases(mock_get_meta):
 @patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.requests.get')
 def test_get_apis_in_service_normal(mock_get):
     """测试get_apis_in_service方法正常返回API列表"""
-    mock_get.return_value.json.return_value = {"apis": {"DescribeInstances": {}, "StartInstance": {}}}
-    apis = api_meta_client.ApiMetaClient.get_apis_in_service('ecs', '2014-05-26')
+    mock_get.return_value.json.side_effect = [
+        [{"code": "ecs", "defaultVersion": "2014-05-26"}],  # for get_service_version
+        {"apis": {"DescribeInstances": {}, "StartInstance": {}}}  # for get_response_from_pop_api
+    ]
+    apis = api_meta_client.ApiMetaClient.get_apis_in_service('ecs')
     assert set(apis) == {"DescribeInstances", "StartInstance"}
     assert len(apis) == 2
 
@@ -290,3 +300,15 @@ def test_get_ref_api_meta_valid_path(mock_pop_api, mock_std):
         }
     }
     assert result == expected
+
+@patch('alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client.ApiMetaClient.get_response_from_pop_api')
+def test_get_all_service_info(mock_get):
+    mock_get.return_value = [
+        {"code": "ecs", "name": "Elastic Compute Service"},
+        {"code": "rds", "name": "Relational Database Service"}
+    ]
+    result = api_meta_client.ApiMetaClient.get_all_service_info()
+    assert result == [
+        {"code": "ecs", "name": "Elastic Compute Service"},
+        {"code": "rds", "name": "Relational Database Service"}
+    ]
