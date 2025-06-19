@@ -1,4 +1,4 @@
-name: Qodo Cover PR (Auto Test Generation)
+name: Qodo Cover PR (Aut Test Generation)
 
 on:
   pull_request:
