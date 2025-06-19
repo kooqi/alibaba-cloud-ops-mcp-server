@@ -4,8 +4,6 @@ on:
   pull_request:
     branches:
       - main
-    types:
-      - labeled
 
 permissions:
   pull-requests: write
@@ -13,10 +11,6 @@ permissions:
 
 jobs:
   run-qodo-cover-pr:
-    if: |
-      contains(github.event.label.name, 'qodo-cover') &&
-      github.event.pull_request.state == 'open' &&
-      github.event.pull_request.draft == false
     runs-on: ubuntu-22.04
     steps:
       - name: Check out repo
