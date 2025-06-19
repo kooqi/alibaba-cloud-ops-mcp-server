@@ -1,0 +1,54 @@
+name: Qodo Cover PR (Auto Test Generation)
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - labeled
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  run-qodo-cover-pr:
+    if: |
+      contains(github.event.label.name, 'qodo-cover') &&
+      github.event.pull_request.state == 'open' &&
+      github.event.pull_request.draft == false
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+
+      - name: Run qodo-cover-pr
+        uses: qodo-ai/qodo-ci/.github/actions/qodo-cover-pr@v0.1.12
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          project_language: python
+          project_root: .
+          code_coverage_report_path: ./coverage.xml
+          coverage_type: cobertura
+          test_command: "pytest --cov=. --cov-report=xml --cov-report=term"
+          model: qwen-max # 这里替换为你的Qwen模型名
+          llm_base_url: https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation # 这里替换为你的Qwen API地址
+          max_iterations: 3
+          desired_coverage: 100
+          run_each_test_separately: true
+          source_folder: .
+          test_folder: .
+          additional_instructions: "所有生成的测试必须包含详细的中文docstring，且需标注'本测试用例由Qodo Cover自动生成'"
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} 
