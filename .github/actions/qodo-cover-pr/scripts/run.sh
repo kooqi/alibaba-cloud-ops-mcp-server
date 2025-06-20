@@ -100,26 +100,44 @@ if [ ! -f "$BINARY_PATH" ]; then
     chmod +x "$BINARY_PATH"
 fi
 
-# Run cover-agent-pro in pr mode with the provided arguments
-"$BINARY_PATH" \
-  --mode "pr" \
-  --project-language "$PROJECT_LANGUAGE" \
-  --project-root "$GITHUB_WORKSPACE/$PROJECT_ROOT" \
-  --diff-coverage "$DIFF_COVERAGE" \
-  --branch "$BRANCH" \
-  --code-coverage-report-path "$GITHUB_WORKSPACE/$CODE_COVERAGE_REPORT_PATH" \
-  --coverage-type "$COVERAGE_TYPE" \
-  --test-command "$TEST_COMMAND" \
-  --model "$MODEL" \
-  --api-base "$API_BASE" \
-  --max-iterations "$MAX_ITERATIONS" \
-  --desired-coverage "$DESIRED_COVERAGE" \
-  --run-each-test-separately "$RUN_EACH_TEST_SEPARATELY" \
-  --source-folder "$SOURCE_FOLDER" \
-  --test-folder "$TEST_FOLDER" \
-  --report-dir "$REPORT_DIR" \
-  --additional-instructions "$ADDITIONAL_INSTRUCTIONS" \
+# Build cover-agent-pro command with proper argument handling
+CMD_ARGS=(
+  --mode "pr"
+  --project-language "$PROJECT_LANGUAGE"
+  --project-root "$GITHUB_WORKSPACE/$PROJECT_ROOT"
+  --code-coverage-report-path "$GITHUB_WORKSPACE/$CODE_COVERAGE_REPORT_PATH"
+  --coverage-type "$COVERAGE_TYPE"
+  --test-command "$TEST_COMMAND"
+  --model "$MODEL"
+  --max-iterations "$MAX_ITERATIONS"
+  --desired-coverage "$DESIRED_COVERAGE"
+  --source-folder "$SOURCE_FOLDER"
+  --test-folder "$TEST_FOLDER"
+  --report-dir "$REPORT_DIR"
+  --additional-instructions "$ADDITIONAL_INSTRUCTIONS"
   --modified-files-json "$MODIFIED_FILES_JSON"
+)
+
+# Add conditional arguments
+if [ "$DIFF_COVERAGE" = "true" ]; then
+  CMD_ARGS+=(--diff-coverage)
+fi
+
+if [ -n "$BRANCH" ] && [ "$BRANCH" != "main" ]; then
+  CMD_ARGS+=(--branch "$BRANCH")
+fi
+
+if [ -n "$API_BASE" ]; then
+  CMD_ARGS+=(--api-base "$API_BASE")
+fi
+
+if [ "$RUN_EACH_TEST_SEPARATELY" = "true" ]; then
+  CMD_ARGS+=(--run-each-test-separately true)
+fi
+
+# Run cover-agent-pro with the built arguments
+echo "Running cover-agent-pro with arguments: ${CMD_ARGS[*]}"
+"$BINARY_PATH" "${CMD_ARGS[@]}"
 
 # Skip git if in local mode
 if [ "$LOCAL" = "false" ]; then
