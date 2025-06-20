@@ -31,13 +31,15 @@ jobs:
           uv pip install pytest pytest-cov --system
 
       - name: Run qodo-cover-pr
-        uses: qodo-ai/qodo-ci/.github/actions/qodo-cover-pr@v0.1.12
+        uses: ./.github/actions/qodo-cover-pr@v0.1.12
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           project_language: python
           project_root: .
           code_coverage_report_path: ./coverage.xml
           coverage_type: cobertura
+          model: openai
+          api_base: https://dashscope.aliyuncs.com/compatible-mode/v1
           test_command: "pytest --cov=. --cov-report=xml --cov-report=term"
           max_iterations: 3
           desired_coverage: 100
