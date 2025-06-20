@@ -109,6 +109,7 @@ CMD_ARGS=(
   --coverage-type "$COVERAGE_TYPE"
   --test-command "$TEST_COMMAND"
   --model "$MODEL"
+  --api-base "$API_BASE"
   --max-iterations "$MAX_ITERATIONS"
   --desired-coverage "$DESIRED_COVERAGE"
   --source-folder "$SOURCE_FOLDER"
@@ -125,10 +126,6 @@ fi
 
 if [ -n "$BRANCH" ] && [ "$BRANCH" != "main" ]; then
   CMD_ARGS+=(--branch "$BRANCH")
-fi
-
-if [ -n "$API_BASE" ]; then
-  CMD_ARGS+=(--api-base "$API_BASE")
 fi
 
 if [ "$RUN_EACH_TEST_SEPARATELY" = "true" ]; then
