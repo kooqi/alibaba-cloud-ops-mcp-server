@@ -44,6 +44,6 @@ jobs:
           run_each_test_separately: true
           source_folder: .
           test_folder: .
-          additional_instructions: "所有生成的测试必须包含详细的中文docstring，且需标注'本测试用例由Qodo Cover自动生成'"
+          additional_instructions: "所有生成的测试必须包含详细中文docstring，且需标注'本测试用例由Qodo Cover自动生成'"
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} 
