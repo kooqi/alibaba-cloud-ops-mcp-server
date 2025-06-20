@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 
-BINARY_PATH="/usr/local/bin/cover-agent-pro"
 REPORT_DIR="/tmp"
 REPORT_PATH="$REPORT_DIR/report.txt"
 API_BASE=""
@@ -91,15 +90,14 @@ if [ ! -s "$MODIFIED_FILES_JSON" ]; then
     exit 0
 fi
 
-# Download cover-agent-pro if not already downloaded
-if [ ! -f "$BINARY_PATH" ]; then
-    echo "Downloading cover-agent-pro v0.3.10..."
-    wget -q -P /usr/local/bin "https://github.com/qodo-ai/qodo-cover/releases/download/0.3.10/cover-agent-pro" >/dev/null
-    chmod +x "$BINARY_PATH"
+# Install cover-agent if not already installed
+if ! command -v cover-agent >/dev/null; then
+    echo "Installing qodo-cover via pip..."
+    pip install git+https://github.com/qodo-ai/qodo-cover.git -q
 fi
 
-# Run cover-agent-pro in pr mode with the provided arguments
-"$BINARY_PATH" \
+# Run cover-agent in pr mode with the provided arguments
+cover-agent \
   --mode "pr" \
   --project-language "$PROJECT_LANGUAGE" \
   --project-root "$GITHUB_WORKSPACE/$PROJECT_ROOT" \
@@ -121,7 +119,7 @@ fi
 
 # Skip git if in local mode
 if [ "$LOCAL" = "false" ]; then
-    # Handle any changes made by cover-agent-pro
+    # Handle any changes made by cover-agent
     echo "Checking git status..."
     git status
     if [ -n "$(git status --porcelain)" ]; then
