@@ -46,6 +46,6 @@ jobs:
           source_folder: .
           test_folder: .
           additional_instructions: "所有生成的测试必须包含详细中文docstring，且需标注'本测试用例由Qodo Cover自动生成'"
-          api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+          api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} 
