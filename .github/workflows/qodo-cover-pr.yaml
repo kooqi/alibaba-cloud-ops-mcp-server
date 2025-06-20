@@ -31,7 +31,7 @@ jobs:
           uv pip install pytest pytest-cov --system
 
       - name: Run qodo-cover-pr
-        uses: ./.github/actions/qodo-cover-pr@v0.1.12
+        uses: ./.github/actions/qodo-cover-pr
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           project_language: python
