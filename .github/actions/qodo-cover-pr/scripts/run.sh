@@ -90,14 +90,18 @@ if [ ! -s "$MODIFIED_FILES_JSON" ]; then
     exit 0
 fi
 
-# Install cover-agent if not already installed
-if ! command -v cover-agent >/dev/null; then
-    echo "Installing qodo-cover via pip..."
-    pip install git+https://github.com/qodo-ai/qodo-cover.git -q
+# Download cover-agent-pro if not already downloaded
+BINARY_PATH="/usr/local/bin/cover-agent-pro"
+if [ ! -f "$BINARY_PATH" ]; then
+    # Use ACTION_REF from environment, fallback to latest known version
+    ACTION_REF_TO_USE=${ACTION_REF:-"v0.1.12"}
+    echo "Downloading cover-agent-pro ${ACTION_REF_TO_USE}..."
+    wget -q -P /usr/local/bin "https://github.com/qodo-ai/qodo-ci/releases/download/${ACTION_REF_TO_USE}/cover-agent-pro" >/dev/null
+    chmod +x "$BINARY_PATH"
 fi
 
-# Run cover-agent in pr mode with the provided arguments
-cover-agent \
+# Run cover-agent-pro in pr mode with the provided arguments
+"$BINARY_PATH" \
   --mode "pr" \
   --project-language "$PROJECT_LANGUAGE" \
   --project-root "$GITHUB_WORKSPACE/$PROJECT_ROOT" \
@@ -119,7 +123,7 @@ cover-agent \
 
 # Skip git if in local mode
 if [ "$LOCAL" = "false" ]; then
-    # Handle any changes made by cover-agent
+    # Handle any changes made by cover-agent-pro
     echo "Checking git status..."
     git status
     if [ -n "$(git status --porcelain)" ]; then
