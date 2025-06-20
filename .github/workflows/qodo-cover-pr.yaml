@@ -31,12 +31,12 @@ jobs:
           uv pip install pytest pytest-cov --system
 
       - name: Run qodo-cover-pr
-        uses: qodo-ai/qodo-ci/.github/actions/qodo-cover-pr@v0.1.12
+        uses: ./.github/actions/qodo-cover-pr
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           project_language: python
           project_root: .
-          model: gpt-4o
+          model: gpt-4o-2024-05-13
           code_coverage_report_path: ./coverage.xml
           coverage_type: cobertura
           test_command: "pytest --cov=. --cov-report=xml --cov-report=term"
@@ -46,5 +46,6 @@ jobs:
           source_folder: .
           test_folder: .
           additional_instructions: "所有生成的测试必须包含详细中文docstring，且需标注'本测试用例由Qodo Cover自动生成'"
+          api_base: "https://api.aihao123.cn/luomacode-api/open-api/v1"
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} 
