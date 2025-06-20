@@ -93,8 +93,8 @@ fi
 
 # Download cover-agent-pro if not already downloaded
 if [ ! -f "$BINARY_PATH" ]; then
-    echo "Downloading cover-agent-pro ${ACTION_REF}..."
-    wget -q -P /usr/local/bin "https://github.com/qodo-ai/qodo-ci/releases/download/${ACTION_REF}/cover-agent-pro" >/dev/null
+    echo "Downloading cover-agent-pro v0.3.10..."
+    wget -q -P /usr/local/bin "https://github.com/qodo-ai/qodo-cover/releases/download/0.3.10/cover-agent-pro" >/dev/null
     chmod +x "$BINARY_PATH"
 fi
 
