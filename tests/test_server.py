@@ -22,11 +22,26 @@ def test_main_run(mock_create_api_tools, mock_FastMCP):
 def test_run_as_main(monkeypatch):
     import runpy, sys
     from alibaba_cloud_ops_mcp_server import server
+    
+    # 创建一个模拟工具对象，具有 name 属性
+    class MockTool:
+        def __init__(self, name):
+            self.name = name
+        def __call__(self, *args, **kwargs):
+            return None
+    
+    mock_tool = MockTool("mock_tool")
+    
     monkeypatch.setattr(server, 'main', lambda *a, **kw: None)
     monkeypatch.setattr(sys, 'argv', ['server.py'])
     import mcp.server.fastmcp
     monkeypatch.setattr(mcp.server.fastmcp.FastMCP, 'run', lambda self, **kwargs: None)
-    import pytest
-    with pytest.raises(SystemExit) as e:
-        runpy.run_path('src/alibaba_cloud_ops_mcp_server/server.py', run_name='__main__')
-    assert e.value.code == 0 
+    
+    # 使用具有 name 属性的模拟工具对象
+    with patch('alibaba_cloud_ops_mcp_server.server.oss_tools.tools', [mock_tool]), \
+         patch('alibaba_cloud_ops_mcp_server.server.oos_tools.tools', [mock_tool]), \
+         patch('alibaba_cloud_ops_mcp_server.server.cms_tools.tools', [mock_tool]):
+        import pytest
+        with pytest.raises(SystemExit) as e:
+            runpy.run_path('src/alibaba_cloud_ops_mcp_server/server.py', run_name='__main__')
+        assert e.value.code == 0 
