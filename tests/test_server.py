@@ -4,9 +4,17 @@ from unittest.mock import patch, MagicMock
 @patch('alibaba_cloud_ops_mcp_server.server.FastMCP')
 @patch('alibaba_cloud_ops_mcp_server.server.api_tools.create_api_tools')
 def test_main_run(mock_create_api_tools, mock_FastMCP):
-    with patch('alibaba_cloud_ops_mcp_server.server.oss_tools.tools', [lambda: None]), \
-         patch('alibaba_cloud_ops_mcp_server.server.oos_tools.tools', [lambda: None]), \
-         patch('alibaba_cloud_ops_mcp_server.server.cms_tools.tools', [lambda: None]):
+    # 创建具有name属性的mock函数
+    mock_tool1 = MagicMock()
+    mock_tool1.__name__ = 'mock_oss_tool'
+    mock_tool2 = MagicMock()
+    mock_tool2.__name__ = 'mock_oos_tool'
+    mock_tool3 = MagicMock()
+    mock_tool3.__name__ = 'mock_cms_tool'
+    
+    with patch('alibaba_cloud_ops_mcp_server.server.oss_tools.tools', [mock_tool1]), \
+         patch('alibaba_cloud_ops_mcp_server.server.oos_tools.tools', [mock_tool2]), \
+         patch('alibaba_cloud_ops_mcp_server.server.cms_tools.tools', [mock_tool3]):
         from alibaba_cloud_ops_mcp_server import server
         mcp = MagicMock()
         mock_FastMCP.return_value = mcp
