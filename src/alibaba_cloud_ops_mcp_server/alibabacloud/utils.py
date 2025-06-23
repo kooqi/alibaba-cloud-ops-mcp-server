@@ -4,19 +4,23 @@ from fastmcp.server.dependencies import get_http_request
 
 
 def get_credentials_from_header():
-    request = get_http_request()
-    headers = request.headers
-    access_key_id = headers.get('x-ak-proven-access-key-id', None)
-    access_key_secret = headers.get('x-ak-proven-access-key-secret', None)
-    token = headers.get('x-acs-ak-proven', None)
-    credentials = None
-    if access_key_id:
-        credentials = {
-            'AccessKeyId': access_key_id,
-            'AccessKeySecret': access_key_secret,
-            'SecurityToken': token
-        }
-    return credentials
+    try:
+        request = get_http_request()
+        headers = request.headers
+        access_key_id = headers.get('x-ak-proven-access-key-id', None)
+        access_key_secret = headers.get('x-ak-proven-access-key-secret', None)
+        token = headers.get('x-acs-ak-proven', None)
+        credentials = None
+        if access_key_id:
+            credentials = {
+                'AccessKeyId': access_key_id,
+                'AccessKeySecret': access_key_secret,
+                'SecurityToken': token
+            }
+        return credentials
+    except RuntimeError:
+        # 没有活跃的HTTP请求上下文时返回None
+        return None
 
 
 def create_config():
