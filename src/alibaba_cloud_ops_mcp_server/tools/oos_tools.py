@@ -45,6 +45,7 @@ def _start_execution_sync(region_id: str, template_name: str, parameters: dict):
         elif status in END_STATUSES:
             return list_executions_resp.body
         time.sleep(1)
+
 @tools.append
 def OOS_RunCommand(
      RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
