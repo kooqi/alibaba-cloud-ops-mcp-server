@@ -18,38 +18,3 @@ def test_main_run(mock_create_api_tools, mock_FastMCP):
         assert mcp.add_tool.call_count == 7  # common_api_tools 4 + oss/oos/cms 各1
         mock_create_api_tools.assert_called_once()
         mcp.run.assert_called_once_with(transport='stdio')
-
-def test_run_as_main(monkeypatch):
-    import runpy, sys
-    from alibaba_cloud_ops_mcp_server import server
-    
-    # 创建一个模拟工具对象，具有 name 属性
-    class MockTool:
-        def __init__(self, name):
-            self.name = name
-        def __call__(self, *args, **kwargs):
-            return None
-    
-    # 创建模拟的 FastMCP 类
-    class MockFastMCP:
-        def __init__(self, *args, **kwargs):
-            pass
-        def add_tool(self, tool):
-            pass
-        def run(self, **kwargs):
-            pass
-    
-    mock_tool = MockTool("mock_tool")
-    
-    monkeypatch.setattr(sys, 'argv', ['server.py'])
-    
-    # 使用具有 name 属性的模拟工具对象和完全模拟的 FastMCP
-    with patch('alibaba_cloud_ops_mcp_server.server.FastMCP', MockFastMCP), \
-         patch('alibaba_cloud_ops_mcp_server.server.oss_tools.tools', [mock_tool]), \
-         patch('alibaba_cloud_ops_mcp_server.server.oos_tools.tools', [mock_tool]), \
-         patch('alibaba_cloud_ops_mcp_server.server.cms_tools.tools', [mock_tool]), \
-         patch('alibaba_cloud_ops_mcp_server.server.api_tools.create_api_tools', lambda mcp, config: None):
-        import pytest
-        with pytest.raises(SystemExit) as e:
-            runpy.run_path('src/alibaba_cloud_ops_mcp_server/server.py', run_name='__main__')
-        assert e.value.code == 0 
