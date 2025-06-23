@@ -21,9 +21,10 @@ class CredentialsProvider(EnvironmentVariableCredentialsProvider):
             session_token = credentials.get('SecurityToken', None)
         else:
             credentialsClient = CredClient()
-            access_key_id = credentialsClient.get_credential().access_key_id
-            access_key_secret = credentialsClient.get_credential().access_key_secret
-            session_token = credentialsClient.get_credential().security_token
+            credential = credentialsClient.get_credential()
+            access_key_id = credential.access_key_id
+            access_key_secret = credential.access_key_secret
+            session_token = credential.security_token
 
         self._credentials = Credentials(
             access_key_id, access_key_secret, session_token)

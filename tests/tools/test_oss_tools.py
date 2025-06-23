@@ -73,22 +73,14 @@ def test_CredentialsProvider_and_get_credentials(mock_cred_client, mock_get_cred
     assert credentials.access_key_secret == 'secret'
     assert credentials.security_token == 'token'
 
-@patch('alibaba_cloud_ops_mcp_server.tools.oss_tools.CredClient')
 @patch('alibaba_cloud_ops_mcp_server.alibabacloud.utils.get_credentials_from_header')
-def test_CredentialsProvider_with_header_credentials(mock_get_credentials_from_header, mock_cred_client):
+def test_CredentialsProvider_with_header_credentials(mock_get_credentials_from_header):
     # mock get_credentials_from_header返回header中的凭证
     mock_get_credentials_from_header.return_value = {
         'AccessKeyId': 'header_id',
         'AccessKeySecret': 'header_secret',
         'SecurityToken': 'header_token'
     }
-    
-    # mock CredClient以防万一
-    cred = MagicMock()
-    cred.access_key_id = 'fallback_id'
-    cred.access_key_secret = 'fallback_secret'
-    cred.security_token = 'fallback_token'
-    mock_cred_client.return_value.get_credential.return_value = cred
     
     provider = oss_tools.CredentialsProvider()
     credentials = provider.get_credentials()

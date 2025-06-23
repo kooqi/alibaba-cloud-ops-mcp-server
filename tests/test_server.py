@@ -12,9 +12,20 @@ def test_main_run(mock_create_api_tools, mock_FastMCP):
     mock_tool3 = MagicMock()
     mock_tool3.__name__ = 'mock_cms_tool'
     
+    # 创建common_api_tools的mock
+    mock_tool4 = MagicMock()
+    mock_tool4.__name__ = 'mock_common_tool1'
+    mock_tool5 = MagicMock()
+    mock_tool5.__name__ = 'mock_common_tool2'
+    mock_tool6 = MagicMock()
+    mock_tool6.__name__ = 'mock_common_tool3'
+    mock_tool7 = MagicMock()
+    mock_tool7.__name__ = 'mock_common_tool4'
+    
     with patch('alibaba_cloud_ops_mcp_server.server.oss_tools.tools', [mock_tool1]), \
          patch('alibaba_cloud_ops_mcp_server.server.oos_tools.tools', [mock_tool2]), \
-         patch('alibaba_cloud_ops_mcp_server.server.cms_tools.tools', [mock_tool3]):
+         patch('alibaba_cloud_ops_mcp_server.server.cms_tools.tools', [mock_tool3]), \
+         patch('alibaba_cloud_ops_mcp_server.server.common_api_tools.tools', [mock_tool4, mock_tool5, mock_tool6, mock_tool7]):
         from alibaba_cloud_ops_mcp_server import server
         mcp = MagicMock()
         mock_FastMCP.return_value = mcp
