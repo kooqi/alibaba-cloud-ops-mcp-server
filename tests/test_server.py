@@ -40,7 +40,8 @@ def test_run_as_main(monkeypatch):
     # 使用具有 name 属性的模拟工具对象
     with patch('alibaba_cloud_ops_mcp_server.server.oss_tools.tools', [mock_tool]), \
          patch('alibaba_cloud_ops_mcp_server.server.oos_tools.tools', [mock_tool]), \
-         patch('alibaba_cloud_ops_mcp_server.server.cms_tools.tools', [mock_tool]):
+         patch('alibaba_cloud_ops_mcp_server.server.cms_tools.tools', [mock_tool]), \
+         patch('alibaba_cloud_ops_mcp_server.server.api_tools.create_api_tools', lambda mcp, config: None):
         import pytest
         with pytest.raises(SystemExit) as e:
             runpy.run_path('src/alibaba_cloud_ops_mcp_server/server.py', run_name='__main__')
