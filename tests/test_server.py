@@ -30,15 +30,22 @@ def test_run_as_main(monkeypatch):
         def __call__(self, *args, **kwargs):
             return None
     
+    # 创建模拟的 FastMCP 类
+    class MockFastMCP:
+        def __init__(self, *args, **kwargs):
+            pass
+        def add_tool(self, tool):
+            pass
+        def run(self, **kwargs):
+            pass
+    
     mock_tool = MockTool("mock_tool")
     
-    monkeypatch.setattr(server, 'main', lambda *a, **kw: None)
     monkeypatch.setattr(sys, 'argv', ['server.py'])
-    import mcp.server.fastmcp
-    monkeypatch.setattr(mcp.server.fastmcp.FastMCP, 'run', lambda self, **kwargs: None)
     
-    # 使用具有 name 属性的模拟工具对象
-    with patch('alibaba_cloud_ops_mcp_server.server.oss_tools.tools', [mock_tool]), \
+    # 使用具有 name 属性的模拟工具对象和完全模拟的 FastMCP
+    with patch('alibaba_cloud_ops_mcp_server.server.FastMCP', MockFastMCP), \
+         patch('alibaba_cloud_ops_mcp_server.server.oss_tools.tools', [mock_tool]), \
          patch('alibaba_cloud_ops_mcp_server.server.oos_tools.tools', [mock_tool]), \
          patch('alibaba_cloud_ops_mcp_server.server.cms_tools.tools', [mock_tool]), \
          patch('alibaba_cloud_ops_mcp_server.server.api_tools.create_api_tools', lambda mcp, config: None):
