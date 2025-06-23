@@ -68,6 +68,20 @@ def test_CredentialsProvider_and_get_credentials(mock_cred_client):
     assert credentials.access_key_secret == 'secret'
     assert credentials.security_token == 'token'
 
+@patch('alibaba_cloud_ops_mcp_server.tools.oss_tools.get_credentials_from_header')
+def test_CredentialsProvider_with_header_credentials(mock_get_creds):
+    """测试从header获取凭证的CredentialsProvider"""
+    mock_get_creds.return_value = {
+        'AccessKeyId': 'header_id',
+        'AccessKeySecret': 'header_secret',
+        'SecurityToken': 'header_token'
+    }
+    provider = oss_tools.CredentialsProvider()
+    credentials = provider.get_credentials()
+    assert credentials.access_key_id == 'header_id'
+    assert credentials.access_key_secret == 'header_secret'
+    assert credentials.security_token == 'header_token'
+
 @patch('alibaba_cloud_ops_mcp_server.tools.oss_tools.CredentialsProvider')
 @patch('alibaba_cloud_ops_mcp_server.tools.oss_tools.oss')
 def test_create_client(mock_oss, mock_provider):

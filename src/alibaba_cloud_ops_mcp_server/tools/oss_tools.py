@@ -1,6 +1,7 @@
 # oss_tools.py
 import os
 import alibabacloud_oss_v2 as oss
+from alibaba_cloud_ops_mcp_server.alibabacloud.utils import get_credentials_from_header
 
 from pydantic import Field
 from alibabacloud_oss_v2 import Credentials
@@ -13,10 +14,16 @@ tools = []
 
 class CredentialsProvider(EnvironmentVariableCredentialsProvider):
     def __init__(self) -> None:
-        credentialsClient = CredClient()
-        access_key_id = credentialsClient.get_credential().access_key_id
-        access_key_secret = credentialsClient.get_credential().access_key_secret
-        session_token = credentialsClient.get_credential().security_token
+        credentials = get_credentials_from_header()
+        if credentials:
+            access_key_id = credentials.get('AccessKeyId', None)
+            access_key_secret = credentials.get('AccessKeySecret', None)
+            session_token = credentials.get('SecurityToken', None)
+        else:
+            credentialsClient = CredClient()
+            access_key_id = credentialsClient.get_credential().access_key_id
+            access_key_secret = credentialsClient.get_credential().access_key_secret
+            session_token = credentialsClient.get_credential().security_token
 
         self._credentials = Credentials(
             access_key_id, access_key_secret, session_token)
@@ -51,8 +58,8 @@ def OSS_ListBuckets(
 
 @tools.append
 def OSS_ListObjects(
-    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     BucketName: str = Field(description='AlibabaCloud OSS Bucket Name'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     Prefix: str = Field(description='AlibabaCloud OSS Bucket Name prefix', default=None)
 ):
     """获取指定OSS存储空间中的所有文件信息。"""
@@ -72,8 +79,8 @@ def OSS_ListObjects(
 
 @tools.append
 def OSS_PutBucket(
-    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     BucketName: str = Field(description='AlibabaCloud OSS Bucket Name'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     StorageClass: str = Field(description='The Storage Type of AlibabaCloud OSS Bucket, The value range is as follows: '
                                           'Standard (default): standard storage, '
                                           'IA: infrequent access, Archive: archive storage, '
@@ -100,8 +107,8 @@ def OSS_PutBucket(
 
 @tools.append
 def OSS_DeleteBucket(
-    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
-    BucketName: str = Field(description='AlibabaCloud OSS Bucket Name')
+    BucketName: str = Field(description='AlibabaCloud OSS Bucket Name'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou')
 ):
     """删除指定的OSS存储空间。"""
     client = create_client(region_id=RegionId)

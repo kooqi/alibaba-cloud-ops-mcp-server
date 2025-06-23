@@ -1,4 +1,4 @@
-from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
 import click
 import logging
 
@@ -60,13 +60,13 @@ def main(transport: str, port: int, host: str, services: str):
         service_list = [(key, SUPPORTED_SERVICES_MAP.get(key, key)) for key in service_keys]
         set_custom_service_list(service_list)
         for tool in common_api_tools.tools:
-            mcp.add_tool(tool)
+            mcp.tool(tool)
     for tool in oos_tools.tools:
-        mcp.add_tool(tool)
+        mcp.tool(tool)
     for tool in cms_tools.tools:
-        mcp.add_tool(tool)
+        mcp.tool(tool)
     for tool in oss_tools.tools:
-        mcp.add_tool(tool)
+        mcp.tool(tool)
     api_tools.create_api_tools(mcp, config)
 
     # Initialize and run the server
