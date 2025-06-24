@@ -47,10 +47,10 @@ def _start_execution_sync(region_id: str, template_name: str, parameters: dict):
         time.sleep(1)
 @tools.append
 def OOS_RunCommand(
-     RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
-     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
-     CommandType: str = Field(description='The type of command executed on the ECS instance, optional value：RunShellScript，RunPythonScript，RunPerlScript，RunBatScript，RunPowerShellScript', default='RunShellScript'),
-     Command: str = Field(description='Content of the command executed on the ECS instance'),
+    Command: str = Field(description='Content of the command executed on the ECS instance'),
+    InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
+    CommandType: str = Field(description='The type of command executed on the ECS instance, optional value：RunShellScript，RunPythonScript，RunPerlScript，RunBatScript，RunPowerShellScript', default='RunShellScript')
 ):
     """批量在多台ECS实例上运行云助手命令，适用于需要同时管理多台ECS实例的场景，如应用程序管理和资源标记操作等。"""
     
@@ -74,8 +74,8 @@ def OOS_RunCommand(
 
 @tools.append
 def OOS_StartInstances(
-     RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
-     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
+    InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
 ):
     """批量启动ECS实例，适用于需要同时管理和启动多台ECS实例的场景，例如应用部署和高可用性场景。"""
     
@@ -93,9 +93,9 @@ def OOS_StartInstances(
 
 @tools.append
 def OOS_StopInstances(
-     RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
-     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
-     ForeceStop: bool = Field(description='Is forced shutdown required', default=False),
+    InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
+    ForeceStop: bool = Field(description='Is forced shutdown required', default=False)
 ):
     """批量停止ECS实例，适用于需要同时管理和停止多台ECS实例的场景。"""
     
@@ -114,9 +114,9 @@ def OOS_StopInstances(
 
 @tools.append
 def OOS_RebootInstances(
-     RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
-     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
-     ForeceStop: bool = Field(description='Is forced shutdown required', default=False),
+    InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
+    ForeceStop: bool = Field(description='Is forced shutdown required', default=False)
 ):
     """批量重启ECS实例，适用于需要同时管理和重启多台ECS实例的场景。"""
     
@@ -135,13 +135,13 @@ def OOS_RebootInstances(
 
 @tools.append
 def OOS_RunInstances(
-    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     ImageId: str = Field(description='Image ID'),
     InstanceType: str = Field(description='Instance Type'),
     SecurityGroupId: str = Field(description='SecurityGroup ID'),
     VSwitchId: str = Field(description='VSwitch ID'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     Amount: int = Field(description='Number of ECS instances', default=1),
-    InstanceName: str = Field(description='Instance Name', default=''),
+    InstanceName: str = Field(description='Instance Name', default='')
 ):
     """批量创建ECS实例，适用于需要同时创建多台ECS实例的场景，例如应用部署和高可用性场景。"""
 
@@ -158,9 +158,9 @@ def OOS_RunInstances(
 
 @tools.append
 def OOS_ResetPassword(
-    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
     Password: str = Field(description='The password of the ECS instance must be 8-30 characters and must contain only the following characters: lowercase letters, uppercase letters, numbers, and special characters only.（）~！@#$%^&*-_+=（40：<>，？/'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
 ):
     """批量修改ECS实例的密码，请注意，本操作将会重启ECS实例"""
     parameters = {
@@ -177,9 +177,9 @@ def OOS_ResetPassword(
 
 @tools.append
 def OOS_ReplaceSystemDisk(
-        RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
-        InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
-        ImageId: str = Field(description='Image ID')
+    InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
+    ImageId: str = Field(description='Image ID'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou')
 ):
     """批量替换ECS实例的系统盘，更换操作系统"""
     parameters = {
@@ -197,8 +197,8 @@ def OOS_ReplaceSystemDisk(
 
 @tools.append
 def OOS_StartRDSInstances(
-        RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
-        InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
+    InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou')
 ):
     """批量启动RDS实例，适用于需要同时管理和启动多台RDS实例的场景，例如应用部署和高可用性场景。"""
 
@@ -216,8 +216,8 @@ def OOS_StartRDSInstances(
 
 @tools.append
 def OOS_StopRDSInstances(
-        RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
-        InstanceIds: List[str] = Field(description='AlibabaCloud RDS instance ID List')
+    InstanceIds: List[str] = Field(description='AlibabaCloud RDS instance ID List'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou')
 ):
     """批量停止RDS实例，适用于需要同时管理和停止多台RDS实例的场景。"""
 
@@ -235,8 +235,8 @@ def OOS_StopRDSInstances(
 
 @tools.append
 def OOS_RebootRDSInstances(
-        RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
-        InstanceIds: List[str] = Field(description='AlibabaCloud RDS instance ID List')
+    InstanceIds: List[str] = Field(description='AlibabaCloud RDS instance ID List'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou')
 ):
     """批量重启RDS实例，适用于需要同时管理和重启多台RDS实例的场景。"""
 

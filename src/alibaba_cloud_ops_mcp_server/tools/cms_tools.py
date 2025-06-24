@@ -37,8 +37,8 @@ def _get_cms_metric_data(region_id: str, instance_ids: List[str], metric_name: s
 
 @tools.append
 def CMS_GetCpuUsageData(
-    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou')
 ):
     """获取ECS实例的CPU使用率数据"""
     return _get_cms_metric_data(RegionId, InstanceIds, 'cpu_total')
@@ -46,8 +46,8 @@ def CMS_GetCpuUsageData(
 
 @tools.append
 def CMS_GetCpuLoadavgData(
-    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou')
 ):
     """获取CPU一分钟平均负载指标数据"""
     return _get_cms_metric_data(RegionId, InstanceIds, 'load_1m')
@@ -55,8 +55,8 @@ def CMS_GetCpuLoadavgData(
 
 @tools.append
 def CMS_GetCpuloadavg5mData(
-    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou')
 ):
     """获取CPU五分钟平均负载指标数据"""
     return _get_cms_metric_data(RegionId, InstanceIds, 'load_5m')
@@ -64,16 +64,16 @@ def CMS_GetCpuloadavg5mData(
 
 @tools.append
 def CMS_GetCpuloadavg15mData(
-    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou')
 ):
     """获取CPU十五分钟平均负载指标数据"""
     return _get_cms_metric_data(RegionId, InstanceIds, 'load_15m')
 
 @tools.append
 def CMS_GetMemUsedData(
-    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou')
 ):
     """获取内存使用量指标数据"""
     return _get_cms_metric_data(RegionId, InstanceIds, 'memory_usedspace')
@@ -81,8 +81,8 @@ def CMS_GetMemUsedData(
 
 @tools.append
 def CMS_GetMemUsageData(
-    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou')
 ):
     """获取内存利用率指标数据"""
     return _get_cms_metric_data(RegionId, InstanceIds, 'memory_usedutilization')
@@ -90,8 +90,8 @@ def CMS_GetMemUsageData(
 
 @tools.append
 def CMS_GetDiskUsageData(
-    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou')
 ):
     """获取磁盘利用率指标数据"""
     return _get_cms_metric_data(RegionId, InstanceIds, 'diskusage_utilization')
@@ -99,8 +99,8 @@ def CMS_GetDiskUsageData(
 
 @tools.append
 def CMS_GetDiskTotalData(
-    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou')
 ):
     """获取磁盘分区总容量指标数据"""
     return _get_cms_metric_data(RegionId, InstanceIds, 'diskusage_total')
@@ -108,8 +108,8 @@ def CMS_GetDiskTotalData(
 
 @tools.append
 def CMS_GetDiskUsedData(
-    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou'),
     InstanceIds: List[str] = Field(description='AlibabaCloud ECS instance ID List'),
+    RegionId: str = Field(description='AlibabaCloud region ID', default='cn-hangzhou')
 ):
     """获取磁盘分区使用量指标数据"""
     return _get_cms_metric_data(RegionId, InstanceIds, 'diskusage_used')
