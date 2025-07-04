@@ -20,12 +20,8 @@ RUN pip install uv
 RUN useradd --create-home --shell /bin/bash app && chown -R app:app /app
 USER app
 
-# Set port parameter, default value is 8000
-ARG PORT=8000
-ENV PORT=${PORT}
-
 # Expose port
-EXPOSE ${PORT}
+EXPOSE 8000
 
 # Set default startup command
 CMD ["uvx", "alibaba-cloud-ops-mcp-server@latest"]
