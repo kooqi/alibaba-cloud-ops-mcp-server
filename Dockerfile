@@ -28,4 +28,4 @@ ENV PORT=${PORT}
 EXPOSE ${PORT}
 
 # Set default startup command
-CMD ["uvx", "alibaba-cloud-ops-mcp-server@0.9,1"]
+CMD ["uvx", "alibaba-cloud-ops-mcp-server@latest"]
