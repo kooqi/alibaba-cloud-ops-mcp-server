@@ -5,7 +5,6 @@ FROM python:3.10-slim
 WORKDIR /app
 
 # Set environment variables
-ENV PYTHONPATH=/app/src
 ENV PYTHONUNBUFFERED=1
 
 # Update package manager and install system dependencies
