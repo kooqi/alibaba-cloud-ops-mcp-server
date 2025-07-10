@@ -11,10 +11,11 @@ def test_main_run(mock_create_api_tools, mock_FastMCP):
         mcp = MagicMock()
         mock_FastMCP.return_value = mcp
         # 调用main函数
-        server.main.callback(transport='stdio', port=12345, host='127.0.0.1', services='ecs')
+        server.main.callback(transport='stdio', port=12345, host='127.0.0.1', services='ecs',
+                             headers_credential_only=None)
         mock_FastMCP.assert_called_once_with(
             name='alibaba-cloud-ops-mcp-server',
-            port=12345, host='127.0.0.1')
+            port=12345, host='127.0.0.1', stateless_http=True)
         assert mcp.tool.call_count == 7  # common_api_tools 4 + oss/oos/cms 各1
         mock_create_api_tools.assert_called_once()
         mcp.run.assert_called_once_with(transport='stdio')
@@ -31,10 +32,11 @@ def test_main_run_without_services(mock_create_api_tools, mock_FastMCP):
         mcp = MagicMock()
         mock_FastMCP.return_value = mcp
         # 调用main函数，不指定services
-        server.main.callback(transport='stdio', port=8000, host='127.0.0.1', services=None)
+        server.main.callback(transport='stdio', port=8000, host='127.0.0.1', services=None,
+                             headers_credential_only=None)
         mock_FastMCP.assert_called_once_with(
             name='alibaba-cloud-ops-mcp-server',
-            port=8000, host='127.0.0.1')
+            port=8000, host='127.0.0.1', stateless_http=True)
         # 不指定services时，应该只有oss/oos/cms的工具被添加，没有common_api_tools
         assert mcp.tool.call_count == 3  # oss/oos/cms 各1
         mock_create_api_tools.assert_called_once()
@@ -75,10 +77,11 @@ def test_main_run_multiple_services(mock_create_api_tools, mock_FastMCP):
         mcp = MagicMock()
         mock_FastMCP.return_value = mcp
         # 调用main函数，指定多个services
-        server.main.callback(transport='sse', port=9000, host='0.0.0.0', services='ecs,vpc,rds')
+        server.main.callback(transport='sse', port=9000, host='0.0.0.0', services='ecs,vpc,rds',
+                             headers_credential_only=None)
         mock_FastMCP.assert_called_once_with(
             name='alibaba-cloud-ops-mcp-server',
-            port=9000, host='0.0.0.0')
+            port=9000, host='0.0.0.0', stateless_http=True)
         # common_api_tools 2 + oss/oos/cms 各1 = 5
         assert mcp.tool.call_count == 5
         mock_create_api_tools.assert_called_once()
@@ -97,6 +100,7 @@ def test_main_run_with_logging(mock_logger, mock_create_api_tools, mock_FastMCP)
         mcp = MagicMock()
         mock_FastMCP.return_value = mcp
         # 调用main函数
-        server.main.callback(transport='streamable-http', port=8080, host='localhost', services=None)
+        server.main.callback(transport='streamable-http', port=8080, host='localhost', services=None,
+                             headers_credential_only=None)
         # 验证日志被调用
         mock_logger.debug.assert_called_once_with('mcp server is running on streamable-http mode.')
