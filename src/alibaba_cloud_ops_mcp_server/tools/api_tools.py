@@ -14,6 +14,7 @@ from alibabacloud_openapi_util.client import Client as OpenApiUtilClient
 from alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client import ApiMetaClient
 from alibaba_cloud_ops_mcp_server.alibabacloud.utils import create_config
 
+logger = logging.getLogger(__name__)
 
 type_map = {
     'string': str,
@@ -29,18 +30,17 @@ REGION_ENDPOINT_SERVICE = ['ecs', 'oos', 'vpc', 'slb']
 DOUBLE_ENDPOINT_SERVICE = {
     'rds': ['cn-qingdao', 'cn-beijing', 'cn-hangzhou', 'cn-shanghai', 'cn-shenzhen', 'cn-heyuan', 'cn-guangzhou', 'cn-hongkong'],
     'ess': ['cn-qingdao', 'cn-beijing', 'cn-hangzhou', 'cn-shanghai', 'cn-nanjing', 'cn-shenzhen'],
-    'ros': ['cn-qingdao'],
     'dds': ['cn-qingdao', 'cn-beijing', 'cn-wulanchabu', 'cn-hangzhou', 'cn-shanghai', 'cn-shenzhen', 'cn-heyuan', 'cn-guangzhou'],
     'r-kvstore': ['cn-qingdao', 'cn-beijing', 'cn-wulanchabu', 'cn-hangzhou', 'cn-shanghai', 'cn-shenzhen', 'cn-heyuan']
 }
 
-CENTRAL_ENDPOINTS_SERVICE = ['cbn']
+CENTRAL_ENDPOINTS_SERVICE = ['cbn', 'ros']
 
 
 def _get_service_endpoint(service: str, region_id: str):
     region_id = region_id.lower()
     use_region_endpoint = service in REGION_ENDPOINT_SERVICE or (
-            service in DOUBLE_ENDPOINT_SERVICE and region_id in DOUBLE_ENDPOINT_SERVICE[service]
+            service in DOUBLE_ENDPOINT_SERVICE and region_id not in DOUBLE_ENDPOINT_SERVICE[service]
     )
 
     if use_region_endpoint:
@@ -78,6 +78,7 @@ def _tools_api_call(service: str, api: str, parameters: dict, ctx: Context):
     
     # 处理特殊参数格式
     processed_parameters = parameters.copy()
+    processed_parameters = {k: v for k, v in processed_parameters.items() if v is not None}
     if service == 'ecs':
         for param_name, param_value in parameters.items():
             if param_name in ECS_LIST_PARAMETERS and isinstance(param_value, list):
@@ -97,8 +98,11 @@ def _tools_api_call(service: str, api: str, parameters: dict, ctx: Context):
         req_body_type='formData',
         body_type='json'
     )
+    logger.info(f'Call API Request: Service: {service} API: {api} Method: {method} Parameters: {processed_parameters}')
     client = create_client(service, processed_parameters.get('RegionId', 'cn-hangzhou'))
     runtime = util_models.RuntimeOptions()
+    resp = client.call_api(params, req, runtime)
+    logger.info(f'Call API Response: {resp}')
     return client.call_api(params, req, runtime)
 
 

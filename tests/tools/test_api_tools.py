@@ -232,7 +232,6 @@ def test_tools_api_call_ecs_list_parameters_non_list():
         # 验证传入query方法的参数
         query_args = mock_OpenApiUtilClient.query.call_args[0][0]
         assert query_args['InstanceIds'] == 'i-123'
-        assert query_args['SecurityGroupIds'] is None
 
 def test_create_tool_function_with_signature_bind_and_apply_defaults():
     """测试func_code函数中的signature.bind和apply_defaults调用"""
@@ -382,7 +381,7 @@ def test_get_service_endpoint_all_branches():
     # REGION_ENDPOINT_SERVICE 分支
     assert _get_service_endpoint('ecs', 'cn-hangzhou') == 'ecs.cn-hangzhou.aliyuncs.com'
     # DOUBLE_ENDPOINT_SERVICE 且 region 匹配
-    assert _get_service_endpoint('rds', 'cn-hangzhou') == 'rds.cn-hangzhou.aliyuncs.com'
+    assert _get_service_endpoint('rds', 'cn-hangzhou') == 'rds.aliyuncs.com'
     # CENTRAL_ENDPOINTS_SERVICE 分支
     assert _get_service_endpoint('cbn', 'cn-hangzhou') == 'cbn.aliyuncs.com'
     # 其它分支
