@@ -34,32 +34,58 @@ DOUBLE_ENDPOINT_SERVICE = {
     'r-kvstore': ['cn-qingdao', 'cn-beijing', 'cn-wulanchabu', 'cn-hangzhou', 'cn-shanghai', 'cn-shenzhen', 'cn-heyuan']
 }
 
-CENTRAL_ENDPOINTS_SERVICE = ['cbn', 'ros']
+CENTRAL_SERVICE = ['cbn', 'ros', 'ram']
+
+CENTRAL_SERVICE_ENDPOINTS = {
+    'bssopenapi': {
+        'DomesticEndpoint': 'business.aliyuncs.com',
+        'InternationalEndpoint': 'business.ap-southeast-1.aliyuncs.com',
+        'DomesticRegion': ['cn-qingdao', 'cn-beijing', 'cn-zhangjiakou', 'cn-huhehaote', 'cn-wulanchabu',
+                           'cn-hangzhou', 'cn-shanghai', 'cn-shenzhen', 'cn-chengdu', 'cn-hongkong']
+    }
+}
 
 
 def _get_service_endpoint(service: str, region_id: str):
     region_id = region_id.lower()
-    use_region_endpoint = service in REGION_ENDPOINT_SERVICE or (
-            service in DOUBLE_ENDPOINT_SERVICE and region_id not in DOUBLE_ENDPOINT_SERVICE[service]
-    )
 
-    if use_region_endpoint:
+    # Prioritizing central service endpoints
+    central = CENTRAL_SERVICE_ENDPOINTS.get(service)
+    if central:
+        if region_id in central.get('DomesticRegion', []):
+            return central['DomesticEndpoint']
+        else:
+            return central['InternationalEndpoint']
+
+    # Determine whether to use regional endpoints
+    if service in REGION_ENDPOINT_SERVICE:
         return f'{service}.{region_id}.aliyuncs.com'
-    elif service in CENTRAL_ENDPOINTS_SERVICE or service in DOUBLE_ENDPOINT_SERVICE:
+
+    if service in DOUBLE_ENDPOINT_SERVICE:
+        not_in_central = region_id not in DOUBLE_ENDPOINT_SERVICE[service]
+        if not_in_central:
+            return f'{service}.{region_id}.aliyuncs.com'
+        else:
+            return f'{service}.aliyuncs.com'
+
+    if service in CENTRAL_SERVICE:
         return f'{service}.aliyuncs.com'
-    else:
-        return f'{service}.{region_id}.aliyuncs.com'
+
+    # Default
+    return f'{service}.{region_id}.aliyuncs.com'
 
 
 def create_client(service: str, region_id: str) -> OpenApiClient:
     config = create_config()
     if isinstance(service, str):
         service = service.lower()
-    config.endpoint = _get_service_endpoint(service, region_id.lower())
+    endpoint = _get_service_endpoint(service, region_id.lower())
+    config.endpoint = endpoint
+    logger.info(f'Service Endpoint: {endpoint}')
     return OpenApiClient(config)
 
 
-# 类型为String的JSON数组参数
+# JSON array parameter of type String
 ECS_LIST_PARAMETERS = {
     'HpcClusterIds', 'DedicatedHostClusterIds', 'DedicatedHostIds', 
     'InstanceIds', 'DeploymentSetIds', 'KeyPairNames', 'SecurityGroupIds', 
@@ -76,7 +102,7 @@ def _tools_api_call(service: str, api: str, parameters: dict, ctx: Context):
     path = api_meta.get('path', '/')
     style = ApiMetaClient.get_service_style(service)
     
-    # 处理特殊参数格式
+    # Handling special parameter formats
     processed_parameters = parameters.copy()
     processed_parameters = {k: v for k, v in processed_parameters.items() if v is not None}
     if service == 'ecs':

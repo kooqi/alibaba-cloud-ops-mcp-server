@@ -39,6 +39,7 @@ When a user submits a request, analyze their needs and check if matching tools e
    - cbn: Cloud Enterprise Network (CBN)
    - dds: MongoDB Database Service (DDS)
    - r-kvstore: Cloud database Tair (compatible with Redis) (R-KVStore)
+   - bssopenapi: Billing and Cost Management (BssOpenAPI)
 
 2. **API Process**
    - Use `ListAPIs` for available APIs

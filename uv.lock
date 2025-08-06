@@ -116,7 +116,7 @@ wheels = [
 
 [[package]]
 name = "alibaba-cloud-ops-mcp-server"
-version = "0.9.3"
+version = "0.9.4"
 source = { editable = "." }
 dependencies = [
     { name = "alibabacloud-cms20190101" },
