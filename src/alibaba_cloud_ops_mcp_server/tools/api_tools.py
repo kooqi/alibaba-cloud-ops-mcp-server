@@ -13,6 +13,7 @@ from alibabacloud_tea_openapi.client import Client as OpenApiClient
 from alibabacloud_openapi_util.client import Client as OpenApiUtilClient
 from alibaba_cloud_ops_mcp_server.alibabacloud.api_meta_client import ApiMetaClient
 from alibaba_cloud_ops_mcp_server.alibabacloud.utils import create_config
+from alibaba_cloud_ops_mcp_server.settings import settings
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +53,9 @@ def _get_service_endpoint(service: str, region_id: str):
     # Prioritizing central service endpoints
     central = CENTRAL_SERVICE_ENDPOINTS.get(service)
     if central:
-        if region_id in central.get('DomesticRegion', []):
+        if settings.env == 'international':
+            return central['InternationalEndpoint']
+        elif region_id in central.get('DomesticRegion', []) or settings.env == 'domestic':
             return central['DomesticEndpoint']
         else:
             return central['InternationalEndpoint']

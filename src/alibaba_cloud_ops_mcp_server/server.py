@@ -55,7 +55,13 @@ SUPPORTED_SERVICES_MAP = {
     default=False,
     help="Whether to use credentials only from headers",
 )
-def main(transport: str, port: int, host: str, services: str, headers_credential_only: bool):
+@click.option(
+    "--env",
+    type=click.Choice(["domestic", "international"]),
+    default="domestic",
+    help="Environment type: 'domestic' for domestic, 'international' for overseas (default: domestic)",
+)
+def main(transport: str, port: int, host: str, services: str, headers_credential_only: bool, env: str):
     # Create an MCP server
     mcp = FastMCP(
         name="alibaba-cloud-ops-mcp-server",
@@ -65,6 +71,8 @@ def main(transport: str, port: int, host: str, services: str, headers_credential
     )
     if headers_credential_only:
         settings.headers_credential_only = headers_credential_only
+    if env:
+        settings.env = env
     if services:
         service_keys = [s.strip().lower() for s in services.split(",")]
         service_list = [(key, SUPPORTED_SERVICES_MAP.get(key, key)) for key in service_keys]
