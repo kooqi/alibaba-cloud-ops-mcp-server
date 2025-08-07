@@ -19,7 +19,8 @@ SUPPORTED_SERVICES_MAP = {
     "ros": "Resource Orchestration Service (ROS)",
     "cbn": "Cloud Enterprise Network (CBN)",
     "dds": "MongoDB Database Service (DDS)",
-    "r-kvstore": "Cloud database Tair (compatible with Redis) (R-KVStore)"
+    "r-kvstore": "Cloud database Tair (compatible with Redis) (R-KVStore)",
+    "bssopenapi": "Billing and Cost Management (BssOpenAPI)"
 }
 
 
