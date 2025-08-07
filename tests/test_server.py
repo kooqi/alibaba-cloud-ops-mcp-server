@@ -12,7 +12,7 @@ def test_main_run(mock_create_api_tools, mock_FastMCP):
         mock_FastMCP.return_value = mcp
         # 调用main函数
         server.main.callback(transport='stdio', port=12345, host='127.0.0.1', services='ecs',
-                             headers_credential_only=None)
+                             headers_credential_only=None, env='domestic')
         mock_FastMCP.assert_called_once_with(
             name='alibaba-cloud-ops-mcp-server',
             port=12345, host='127.0.0.1', stateless_http=True)
@@ -33,7 +33,7 @@ def test_main_run_without_services(mock_create_api_tools, mock_FastMCP):
         mock_FastMCP.return_value = mcp
         # 调用main函数，不指定services
         server.main.callback(transport='stdio', port=8000, host='127.0.0.1', services=None,
-                             headers_credential_only=None)
+                             headers_credential_only=None, env='domestic')
         mock_FastMCP.assert_called_once_with(
             name='alibaba-cloud-ops-mcp-server',
             port=8000, host='127.0.0.1', stateless_http=True)
@@ -78,7 +78,7 @@ def test_main_run_multiple_services(mock_create_api_tools, mock_FastMCP):
         mock_FastMCP.return_value = mcp
         # 调用main函数，指定多个services
         server.main.callback(transport='sse', port=9000, host='0.0.0.0', services='ecs,vpc,rds',
-                             headers_credential_only=None)
+                             headers_credential_only=None, env='domestic')
         mock_FastMCP.assert_called_once_with(
             name='alibaba-cloud-ops-mcp-server',
             port=9000, host='0.0.0.0', stateless_http=True)
@@ -101,6 +101,6 @@ def test_main_run_with_logging(mock_logger, mock_create_api_tools, mock_FastMCP)
         mock_FastMCP.return_value = mcp
         # 调用main函数
         server.main.callback(transport='streamable-http', port=8080, host='localhost', services=None,
-                             headers_credential_only=None)
+                             headers_credential_only=None, env='domestic')
         # 验证日志被调用
         mock_logger.debug.assert_called_once_with('mcp server is running on streamable-http mode.')
