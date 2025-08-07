@@ -129,7 +129,7 @@ def _tools_api_call(service: str, api: str, parameters: dict, ctx: Context):
     runtime = util_models.RuntimeOptions()
     resp = client.call_api(params, req, runtime)
     logger.info(f'Call API Response: {resp}')
-    return client.call_api(params, req, runtime)
+    return resp
 
 
 def _create_parameter_schema(fields: dict):
