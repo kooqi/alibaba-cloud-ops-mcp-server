@@ -14,7 +14,8 @@ dependencies = [
     "alibabacloud_oss_v2>=1.1.0",
     "alibabacloud-credentials>=1.0.0",
     "click>=8.1.8",
-    "fastmcp==2.8.0"
+    "fastmcp==2.8.0",
+    "alibabacloud-slb20140515>=2.1.0"
 ]
 
 [build-system]
