@@ -90,7 +90,7 @@ def main(transport: str, port: int, host: str, services: str, headers_credential
     for tool in ecs_tools.tools:
         mcp.tool(tool)
     
-    # api_tools.create_api_tools(mcp, config)
+    api_tools.create_api_tools(mcp, config)
 
     # Initialize and run the server
     logger.debug(f'mcp server is running on {transport} mode.')

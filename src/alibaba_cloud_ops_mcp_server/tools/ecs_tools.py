@@ -284,7 +284,7 @@ def ECS_DescribeVSwitches(
         params['zone_id'] = zone_id
 
     describe_v_switches_request = ecs_20140526_models.DescribeVSwitchesRequest(**params)
-    return client.describe_v_switches(describe_v_switches_request)
+    return client.describe_vswitches(describe_v_switches_request)
 
 @tools.append
 def ECS_DescribeRegions(

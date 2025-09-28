@@ -16,7 +16,7 @@ def test_main_run(mock_create_api_tools, mock_FastMCP):
         mock_FastMCP.assert_called_once_with(
             name='alibaba-cloud-ops-mcp-server',
             port=12345, host='127.0.0.1', stateless_http=True)
-        assert mcp.tool.call_count == 7  # common_api_tools 4 + oss/oos/cms 各1
+        assert mcp.tool.call_count == 33  # common_api_tools 4 + oss 1 + oos 1 + cms 1 + lbs 12 + ecs 14 = 33
         mock_create_api_tools.assert_called_once()
         mcp.run.assert_called_once_with(transport='stdio')
 
@@ -37,8 +37,9 @@ def test_main_run_without_services(mock_create_api_tools, mock_FastMCP):
         mock_FastMCP.assert_called_once_with(
             name='alibaba-cloud-ops-mcp-server',
             port=8000, host='127.0.0.1', stateless_http=True)
-        # 不指定services时，应该只有oss/oos/cms的工具被添加，没有common_api_tools
-        assert mcp.tool.call_count == 3  # oss/oos/cms 各1
+        # 不指定services时，应该只有oss/oos/cms/lbs/ecs的工具被添加，没有common_api_tools
+        # oss 1 + oos 1 + cms 1 + lbs 12 + ecs 14 = 29 (实际测试中api_tools.create_api_tools未被调用因为被mock)
+        assert mcp.tool.call_count == 29
         mock_create_api_tools.assert_called_once()
         mcp.run.assert_called_once_with(transport='stdio')
 
@@ -82,8 +83,9 @@ def test_main_run_multiple_services(mock_create_api_tools, mock_FastMCP):
         mock_FastMCP.assert_called_once_with(
             name='alibaba-cloud-ops-mcp-server',
             port=9000, host='0.0.0.0', stateless_http=True)
-        # common_api_tools 2 + oss/oos/cms 各1 = 5
-        assert mcp.tool.call_count == 5
+        # common_api_tools 2 + oss 1 + oos 1 + cms 1 + lbs 12 + ecs 14 = 31 (但测试中mock了common_api_tools为2个工具)
+        # 实际测试中api_tools.create_api_tools未被调用因为被mock，所以是 2 + 1 + 1 + 1 + 12 + 14 = 31
+        assert mcp.tool.call_count == 31
         mock_create_api_tools.assert_called_once()
         mcp.run.assert_called_once_with(transport='sse')
 

@@ -60,24 +60,36 @@ def SLB_DescribeLoadBalancerListeners(
     load_balancer_id: str = Field(..., description='负载均衡器实例ID (The ID of the SLB instance)'),
     region_id: str = Field(description='阿里云地域ID (AlibabaCloud region ID)', default='cn-hangzhou'),
     listener_port: int = Field(description='监听端口 (The listener port)', default=None),
-    protocol: str = Field(description='监听协议：TCP、UDP、HTTP、HTTPS (The listener protocol)', default=None),
-    page_number: int = Field(description='页码，从1开始 (The page number. Pages start from page 1)', default=1),
-    page_size: int = Field(description='每页数量，最大100 (The number of entries per page. Maximum value: 100)', default=10)
+    listener_protocol: str = Field(description='监听协议：TCP、UDP、HTTP、HTTPS (The listener protocol)', default=None),
+    max_results: int = Field(description='每页数量，最大100 (The number of entries per page. Maximum value: 100)', default=100)
 ):
-    """查询负载均衡器的监听器配置 (Queries the listeners of a Server Load Balancer instance)"""
+    """查询负载均衡器的监听器配置 (Queries the listeners of a Server Load Balancer instance)
+
+    Args:
+        load_balancer_id: 负载均衡器实例ID
+        region_id: 阿里云地域ID，默认为'cn-hangzhou'
+        listener_port: 监听端口，可选
+        listener_protocol: 监听协议，可选值：TCP、UDP、HTTP、HTTPS
+        max_results: 每页返回的最大结果数，最大值为100，默认为100
+
+    Returns:
+        负载均衡器监听器的配置信息
+    """
     client = create_client(region_id=region_id)
+
+    # Convert load_balancer_id to a list as required by the API
+    load_balancer_ids = [load_balancer_id] if load_balancer_id else None
 
     params = {
         'region_id': region_id,
-        'load_balancer_id': load_balancer_id,
-        'page_number': page_number,
-        'page_size': page_size
+        'load_balancer_id': load_balancer_ids,
+        'max_results': max_results
     }
 
     if listener_port:
         params['listener_port'] = listener_port
-    if protocol:
-        params['protocol'] = protocol
+    if listener_protocol:
+        params['listener_protocol'] = listener_protocol
 
     describe_load_balancer_listeners_request = slb_20140515_models.DescribeLoadBalancerListenersRequest(**params)
     return client.describe_load_balancer_listeners(describe_load_balancer_listeners_request)
